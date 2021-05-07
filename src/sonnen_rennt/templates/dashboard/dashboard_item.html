@@ -1,0 +1,37 @@
+{# card_details_color_class:  #}
+{# card_details_color: linear-gradient(60deg, #ffa726, #cb851d); #}
+{# card_detail_icon: content_copy #}
+{# card_detail_title: Distanz #}
+{# card_detail_detail: 14 km #}
+{# card_footer_icon: flag #}
+{# card_footer_text: heute #}
+
+<div class="col-xl-4 col-lg-4 col-md-6 col-sm-8">
+  <div class="card card-stats">
+    <div class="card-header {% block card_details_color_class %}{% endblock %} card-header-icon">
+      <div class="card-icon"
+         style="background: {% block card_details_color %}{% endblock %};">
+        <i class="material-icons">{% block card_detail_icon %}{% endblock %}</i>
+      </div>
+{#      <br>#}
+      <div style="height: 50px; width: 10px"></div>
+      <p class="card-category">{% block card_detail_title %}{% endblock %}</p>
+      <h4 class="card-title">{% block card_detail_detail %}{% endblock %}</h4>
+{#      <h3 class="card-title">{% block card_detail_detail %}{% endblock %}#}
+{#                    <small>GB</small>#}
+{#      </h3>#}
+    </div>
+    <div class="card-footer">
+      <div class="stats">
+        <i class="material-icons">
+            {% block card_footer_icon %}{% endblock %}</i> {% block card_footer_text %}{% endblock %}
+      </div>
+    </div>
+{#        <div class="card-footer">#}
+{#          <div class="stats">#}
+{#            <i class="material-icons text-danger">warning</i>#}
+{#            <a href="javascript:;">Get More Space...</a>#}
+{#          </div>#}
+{#        </div>#}
+  </div>
+</div>

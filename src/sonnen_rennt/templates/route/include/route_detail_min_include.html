@@ -1,0 +1,28 @@
+{% load timedelta_filter %}
+
+<div class="card m-xl-4 m-l-4 m-md-2 m-sm-1" style="width: 18rem; display: inline-block;">
+  <div class="card-body">
+    <h5 class="card-title">{{ route.title }}</h5>
+    <h6 class="card-subtitle mb-2 text-muted">von {{ route.creator.user.username }}</h6>
+
+    <p class="card-text"><strong>Distanz / Höhenmeter: </strong>{{ route.distance }} km / {{ route.elevation_gain }} m</p>
+
+    {% if route.link %}
+        <p class="card-text"><strong>Link zur Routenbeschreibung: </strong>
+        <a href="{{ route.link }}">{{ route.link }}</a></p>
+    {% endif %}
+
+    {% if route.description %}
+        <p class="card-text"></p>
+        <p class="card-text"><strong>Notiz:</strong><br>{{ route.description|slice:":128" }}</p>
+    {% endif %}
+
+    <a href="/route/detail/{{ route.id }}" class="card-link">Details</a>
+
+    {% if route.creator.id == user.profile.id %}
+      <a href="/route/delete/{{ route.id }}" class="card-link">Löschen</a>
+      <a href="/route/edit/{{ route.id }}" class="card-link">Bearbeiten</a>
+    {% endif %}
+
+  </div>
+</div>

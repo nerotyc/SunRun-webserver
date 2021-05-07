@@ -1,0 +1,189 @@
+# def detail_view(request, run_id):
+#     # run = Run.objects.get(id=run_id)
+#     run = get_object_or_404(Run, id=run_id)
+#
+#     context = {'run': run}
+#
+#     return render(request, "run/detail.html", context)
+
+#
+
+
+
+
+
+
+# def list_view_v1(request, *args, **kargs):
+#     runs = Run.objects.all()
+#
+#     context = {
+#         'runs': runs,
+#     }
+#
+#     return render(request, "run/run_list.html", context)
+
+
+# def create_view_1(request, *args, **kargs):
+#
+#
+#     # raw html form
+#
+#     error = None
+#     error_time_started = None
+#     error_duration = None
+#     error_note = None
+#
+#     if request.method == "POST":
+#
+#         time_start = request.POST.get('time_start')
+#
+#         duration_hours_read = request.POST.get('duration_hours')
+#         duration_hours = 0 if (len(duration_hours_read) == 0) else int(duration_hours_read)
+#
+#         duration_minutes = int()
+#
+#         duration_minutes_read = request.POST.get('duration_minutes')
+#         duration_minutes = 0 if (len(duration_minutes_read) == 0) else int(duration_minutes_read)
+#
+#         duration_seconds_read = request.POST.get('duration_seconds')
+#         duration_seconds = 0 if (len(duration_seconds_read) == 0) else int(duration_seconds_read)
+#
+#         print(duration_hours)
+#         print(duration_minutes)
+#         print(duration_seconds)
+#
+#         duration = duration_hours * 3600 + 60 * duration_minutes + duration_seconds
+#         print("duration", duration)
+#         note = request.POST.get('note')
+#
+#         if len(time_start) == 0:
+#             time_start = datetime.now()
+#         else:
+#             time_start = datetime.strptime(time_start, '%Y-%m-%dT%H:%M')
+#
+#         if duration == 0:
+#             #     TODO
+#             error_duration = "Sie müssen eine Dauer angeben!"
+#
+#         if len(note) == 0 and False:
+#             error_note = "Falsche Eingabe!"
+#
+#         if error_time_started or error_duration or error_note:
+#             error = "Falsche Eingabe!"
+#
+#         if error is None:
+#             Run.objects.create(time_start=time_start,
+#                                duration=timedelta(seconds=duration),
+#                                note=note)
+#
+#     context = {
+#         'error': error,
+#         'error_time_started': error_time_started,
+#         'error_duration': error_duration,
+#         'error_note': error_note,
+#     }
+#
+#     return render(request, "run/create.html", context)
+
+
+# def create_view_v3(request, *args, **kargs):
+#     form = RawRunCreateForm()
+#     if request.method == 'POST':
+#         form = RawRunCreateForm(request.POST)
+#
+#         if form.is_valid():
+#             print(form.cleaned_data)
+#             Run.objects.create(**form.cleaned_data)
+#             # TODO forwarding
+#         else:
+#             print(form.errors)
+#
+#     context = {
+#         'form': form
+#     }
+#
+#     return render(request, "run/create.html", context)
+
+
+
+# TODO
+def create_view(request, *args, **kargs):
+    initial = {
+        'time_start': datetime.now(),
+    }
+
+    form = RunCreateForm(request.POST or None, initial=initial)  #, initial=initial_data
+
+# YYYY-MM-DD HH-MM
+    if form.is_valid():
+        # print("pre: ", form.cleaned_data['time_start'])
+        # if len(form.data['time_start']) == 0:
+        #     form.cleaned_data['time_start'] = datetime.now().strftime("%Y-%m-%d %H:%M")
+        #     print("form.cleaned_data['time_start']: ", form.cleaned_data['time_start'])
+
+        new_run = form.save()
+
+        if new_run is not None:
+            messages.success(request, "Lauf erfolgreich erstellt!")
+            return redirect(new_run.get_absolute_url())
+        else:
+            messages.error("Bei der Erstellung des Laufes ist leider etwas schief gelaufen!")
+            return redirect("/run/create/")
+
+    context = {
+        'form': form,
+    }
+    return render(request, "run/create.html", context)
+
+
+
+
+
+
+def edit_view(request, run_id, *args, **kargs):
+    run = Run.objects.get(id=run_id)
+
+    initial = {
+        'time_start': run.time_start,
+        'duration': run.duration,
+        'note': run.note
+    }
+
+    form = RunCreateForm(request.POST or None, initial=initial)
+
+    # YYYY-MM-DD HH-MM
+    if form.is_valid():
+        new_run = form.save()
+
+        if new_run is not None:
+            messages.success(request, "Lauf erfolgreich aktualisiert!")
+            return redirect(new_run.get_absolute_url())
+        else:
+            messages.error("Bei der Aktualisierung des Laufes ist leider etwas schief gelaufen!")
+            return redirect("/run/edit/" + str(run.id) + "/")
+
+    context = {
+        'form': form,
+    }
+    return render(request, "run/create.html", context)
+
+
+
+
+
+
+
+
+def delete_view(request, run_id, *args, **kargs):
+    run = get_object_or_404(Run, id=run_id)
+
+    if request.method == "POST":
+        run.delete()
+        messages.success(request, "Der Lauf wurde erfolgreich gelöscht.")
+        return redirect("/run/list/")
+
+    context = {
+        'run': run,
+    }
+
+    return render(request, "run/delete.html", context)

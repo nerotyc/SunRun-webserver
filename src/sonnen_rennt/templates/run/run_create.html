@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <h3 style="font-weight: bold;  font-size: 28px; display: inline-block">Neue Aktivität eintragen</h3>
+</div>
+
+{#    <form method="POST">#}
+{#        {% csrf_token %}#}
+{#        {{ form.as_p }}#}
+{#        <input type="submit" value="Save" class="btn btn-primary">#}
+{#    </form>#}
+
+    <br><br>
+
+{#    <form method="POST">#}
+{#        {% csrf_token %}#}
+{##}
+{#        {% if error %}#}
+{##}
+{#            <p>{{ error }}</p>#}
+{##}
+{#        {% endif %}#}
+{##}
+{##}
+{#        <h4>Startzeit</h4>#}
+{#        {% if error_time_start %}#}
+{#            <span>{{ error_time_start }}</span><br>#}
+{#        {%  endif %}#}
+{#        <input type="datetime-local" name="time_start" placeholder="Startzeit" err><br>#}
+{##}
+{#        <h4>Dauer</h4>#}
+{#        {% if error_duration %}#}
+{#            <span>{{ error_duration }}</span><br>#}
+{#        {%  endif %}#}
+{#        <input type="number" name="duration_hours" placeholder="Stunden">#}
+{#        <input type="number" name="duration_minutes" placeholder="Minuten">#}
+{#        <input type="number" name="duration_seconds" placeholder="Sekunden"><br>#}
+{##}
+{#        <h4>Notiz</h4>#}
+{#        {% if error_note %}#}
+{#            <span>{{ error_note }}</span><br>#}
+{#        {%  endif %}#}
+{#        <input type="text" name="note" placeholder="Notiz"><br><br>#}
+{#        <input type="submit" value="Save" class="btn btn-primary">#}
+{#    </form>#}
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Speichern" class="btn btn-primary">
+    </form>
+
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% include "vendor/profile_card.html" %}
+
+<div class="pr-3 pl-3">
+
+    {% include "group/include/group_header.html" %}
+
+    <h3 style="font-weight: bold;  font-size: 28px; display: inline-block">Ihre erstellten Gruppen:</h3><br>
+
+    {% include "group/include/group_for_loop.html" %}
+
+    <br>
+    <br>
+
+</div>
+
+{% endblock %}

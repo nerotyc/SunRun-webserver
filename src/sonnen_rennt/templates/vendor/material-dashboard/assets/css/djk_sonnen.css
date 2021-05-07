@@ -1,0 +1,66 @@
+
+.djk-bg-light {
+    background: #616161!important;
+    color: #ffffff!important;
+}
+
+.djk-bg-dark {
+    background: #424242!important; /* 111111 */
+    color: #ffffff!important;
+}
+
+.djk-bg-darker {
+    background: #212121!important;
+    color: #ffffff!important;
+}
+
+.djk-bg-accent-dark {
+    background: #ff9800!important;
+    color: #ffffff!important;
+}
+
+.djk-bg-accent {
+    background: #ffa726!important;
+    color: #ffffff!important;
+}
+
+.djk-col-accent-dark {
+    color: #ff9800!important;
+}
+
+.djk-col-accent {
+    color: #ffa726!important;
+}
+
+.djk-col-white {
+    color: #ffffff!important;
+}
+
+a {
+    color: #ffa726!important;
+}
+
+.djk-action-button {
+    padding: 10px;
+    color: white;
+    background-color: #ffa726;
+    border-radius: 1000px;
+    width: 45px;
+    height: 45px;
+    color: white;
+    box-shadow: 5px 5px 10px rgba(0,0,0,0.35);
+}
+
+.djk-action-button:hover {
+    background-color: #ff9800;
+}
+
+.djk-icon {
+    font-size: 22px!important;
+    height: 22px!important;;
+}
+
+.djk-icon-small {
+    font-size: 15px!important;
+    height: 22px!important;;
+}

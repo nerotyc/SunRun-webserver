@@ -1,0 +1,80 @@
+<h3 style="font-weight: bold;  font-size: 28px; display: inline-block">Läufer</h3><br>
+
+<h4 style="font-weight: bold; font-size: 18px; display: inline-block">Sortieren nach:</h4>
+<ul class="nav nav-pills">
+  <li class="nav-item">
+    <a class="nav-link text-white m-1
+        {% if sort == 'count' %}
+            active djk-bg-accent
+        {% else %}
+            border border-light
+        {% endif %}"
+       aria-current="page" href="?tab=runners&sort=count">Anzahl Aktivitäten</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link text-white m-1
+        {% if sort == 'duration' %}
+            active djk-bg-accent
+        {% else %}
+            border border-light
+        {% endif %}"
+       href="?tab=runners&sort=duration">Dauer</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link text-white m-1
+        {% if sort == 'alphabet' %}
+            active djk-bg-accent
+        {% else %}
+            border border-light
+        {% endif %}"
+       href="?tab=runners&sort=alphabet">Alphabet</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link text-white m-1
+        {% if sort == 'distance' %}
+            active djk-bg-accent
+        {% else %}
+            border border-light
+        {% endif %}"
+       href="?tab=runners&sort=distance">Distanz</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link text-white m-1
+        {% if sort == 'score' %}
+            active djk-bg-accent
+        {% else %}
+            border border-light
+        {% endif %}"
+       href="?tab=runners&sort=score">Punkte</a>
+  </li>
+</ul>
+
+<br>
+<br>
+
+{% if page_obj.object_list|length <= 0 %}
+
+    <div class="alert" role="alert">
+      Keine Teilnehmer vorhanden!
+    </div>
+
+{% else %}
+
+    {% include "include/group_route_run_pagination.html" %}
+    <br>
+
+    {% for runner in page_obj.object_list %}
+
+        {% include "group/include/users/group_runners_user_include.html" %}
+
+    {% endfor %}
+
+    <br>
+    <br>
+
+    {% include "include/group_route_run_pagination.html" %}
+
+{% endif %}
+
+<br>
+<br>

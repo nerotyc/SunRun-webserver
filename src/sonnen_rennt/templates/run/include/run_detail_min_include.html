@@ -1,0 +1,46 @@
+{% load timedelta_filter %}
+
+<div class="card m-xl-4 m-l-4 m-md-2 m-sm-1" style="width: 18rem; display: inline-block;">
+  <div class="card-body">
+    <h5 class="card-title">
+        {% if run.type == "E-BIKE" %}
+            <i class="material-icons">electric_bike</i>
+        {% elif run.type == "BIKE" %}
+            <i class="material-icons">directions_bike</i>
+        {% elif run.type == "WALK" %}
+            <i class="material-icons">directions_walk</i>
+        {% else %}
+{#            RUN #}
+            <i class="material-icons">directions_run</i>
+        {% endif %}
+        {{ run.time_start }}</h5>
+    <h6 class="card-subtitle mb-2 text-muted" style="color: dimgrey!important;">von {{ run.creator.user.username }}</h6>
+
+    <p class="card-text"><b>Distanz / Höhenmeter: </b>{{ run.distance|floatformat:-1 }} km / {{ run.elevation_gain|floatformat:0 }} m</p>
+    <p class="card-text"><b>Dauer: </b>{{ run.duration|timedelta:"{hours2}h {minutes2}min {seconds2}sek" }}</p>
+
+    {% if run.route %}
+        <p class="card-text"><b>Route: </b>
+            <a href="/route/detail/{{ run.route.id }}" class="card-link"><b>{{ run.route.title }}</b></a>
+        </p>
+    {%  endif %}
+
+    {% if run.group %}
+        <p class="card-text"><b>Group: </b>
+            <a href="/group/detail/{{ run.group.id }}" class="card-link"><b>{{ run.group.name }}</b></a>
+        </p>
+    {%  endif %}
+
+
+    {% if run.note %}
+        <p class="card-text"><strong>Notiz:</strong><br>{{ run.note|slice:":128" }}</p>
+    {% endif %}
+
+    <a href="/run/detail/{{ run.id }}" class="card-link">Details</a>
+
+    {% if run.creator.id == user.profile.id %}
+      <a href="/run/delete/{{ run.id }}" class="card-link">Löschen</a>
+      <a href="/run/edit/{{ run.id }}" class="card-link">Bearbeiten</a>
+    {% endif %}
+  </div>
+</div>

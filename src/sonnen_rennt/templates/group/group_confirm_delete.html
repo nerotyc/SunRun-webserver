@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% include "vendor/profile_card.html" %}
+
+<div class="pr-3 pl-3">
+
+    {% include "group/include/group_header.html" %}
+
+    <h3 style="font-weight: bold;  font-size: 28px; display: inline-block">Willst die Gruppe wirklich löschen?</h3>
+
+    {% include "group/include/group_detail_include.html" %}
+
+    <form method="POST">
+        {% csrf_token %}
+        <br><br>
+        <input type="submit" value="Löschen" class="btn btn-primary">
+    </form>
+
+    <br>
+    <br>
+
+</div>
+
+{% endblock %}

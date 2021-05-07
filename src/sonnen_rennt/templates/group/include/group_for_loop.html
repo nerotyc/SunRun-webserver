@@ -1,0 +1,23 @@
+{% if page_obj.object_list|length <= 0 %}
+
+<!--    <div class="alert" role="alert">-->
+<!--      Keine Gruppen vorhanden!-->
+<!--    </div>-->
+
+{% else %}
+
+    {% include "include/group_route_run_pagination.html" %}
+    <br>
+
+    {% for group in page_obj.object_list %}
+
+        {% include "group/include/group_detail_min_include.html" %}
+
+    {% endfor %}
+
+    <br>
+    <br>
+
+    {% include "include/group_route_run_pagination.html" %}
+
+{% endif %}

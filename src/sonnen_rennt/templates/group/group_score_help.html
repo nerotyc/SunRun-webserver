@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% include "vendor/profile_card.html" %}
+
+<div class="pr-3 pl-3">
+
+    {% include "group/include/group_header.html" %}
+
+   <h3 style="font-weight: bold;  font-size: 28px; display: inline-block">Gruppenranking Informationen:</h3><br>
+
+    <p><b>Formel für Gruppenrankings-Punkte:</b></p>
+    <ul>
+{#        <li>G := Gruppengröße (Teilnehmerzahl)</li>#}
+        <li>S := zurückgelegte Gesamtdistanz in km</li>
+{#        <li>D := zurückgelegte Gesamtdauer in h</li>#}
+    </ul>
+    <br>
+
+    <h3 style="font-weight: bold;  font-size: 20px; display: inline-block">Aktivitäts-Faktor</h3>
+    <ul>
+        <li><b>Walken/Gehen</b>: 1 1/3 * S</li>
+        <li><b>Laufen</b> (Def.: ∃ Flugphase): 1.0 * S</li>
+        <li><b>Rad</b>: 2/3 * S</li>
+        <li><b>E-Bike</b>: 1/3 * S</li>
+{#        <li>Teilnehmerpunktepunkte = -3430 * (1 / (G + 95)) + 36.5</li>#}
+{#        <li>Distanzpunkte = -129800 * (1 / (S + 4000)) + 32.5</li>#}
+{#        <li>Dauerpunkte = -1724000 * (1 / (D + 39600)) + 44</li>#}
+    </ul>
+
+
+
+</div>
+
+{% endblock %}

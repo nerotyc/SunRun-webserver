@@ -1,0 +1,121 @@
+{% load timedelta_filter %}
+
+<div class="container-fluid">
+    <div class="container">
+        <div class="main-body">
+            <div class="col-md-8">
+              <div class="card mb-3">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Ersteller</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ run.creator.user.username }}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Zeit Start</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ run.time_start }}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Distanz / Höhenmeter</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ run.distance|floatformat:-1 }} km &ensp;/ {{ run.elevation_gain|floatformat:0 }} m
+                        {% if run.type == "E-BIKE" %}
+                            <i class="material-icons">electric_bike</i>
+                        {% elif run.type == "BIKE" %}
+                            <i class="material-icons">directions_bike</i>
+                        {% elif run.type == "WALK" %}
+                            <i class="material-icons">directions_walk</i>
+                        {% else %}
+                {#            RUN #}
+                            <i class="material-icons">directions_run</i>
+                        {% endif %}
+                    </div>
+                  </div>
+                  <hr>
+                  {% if run.route %}
+                      <div class="row">
+                        <div class="col-sm-3">
+                          <h6 class="mb-0">Route</h6>
+                        </div>
+                        <a class="col-sm-9" href="/route/detail/{{ run.route.id }}">
+                          <b>{{ run.route.title }}</b>
+                        </a>
+                      </div>
+                      <hr>
+                  {%  endif %}{% if run.group %}
+                      <div class="row">
+                        <div class="col-sm-3">
+                          <h6 class="mb-0">Gruppe</h6>
+                        </div>
+                        <a class="col-sm-9" href="/group/detail/{{ run.group.id }}">
+                          <b>{{ run.group.name }}</b>
+                        </a>
+                      </div>
+                      <hr>
+                  {%  endif %}
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Dauer</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ run.duration|timedelta:"{hours2}h {minutes2}min {seconds2}sek" }}
+                    </div>
+                  </div>
+                  <hr>
+                {% if run.note %}
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Notiz</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ run.note|slice:":255" }}
+                    </div>
+                  </div>
+                  <hr>
+                {% endif %}
+                {% if not run_details_view  %}
+                    <div class="row">
+                        <a href="/run/detail/{{ run.id }}/">
+                            <div class="shadow p-3 bg-white rounded">
+                                <div class="djk-action-button">
+                                    <i class="material-icons">info</i>
+                                </div>
+                            </div>
+                        </a>
+
+                        {% if user.profile.id == run.creator.id %}
+                            <a href="/run/delete/{{ run.id }}/">
+                                <div class="shadow p-3 bg-white rounded">
+                                    <div class="djk-action-button">
+                                        <i class="material-icons">delete</i>
+                                    </div>
+                                </div>
+                            </a>
+                            <a href="/run/edit/{{ run.id }}/">
+                                <div class="shadow p-3 bg-white rounded">
+                                    <div class="djk-action-button">
+                                        <i class="material-icons">edit</i>
+                                    </div>
+                                </div>
+                            </a>
+                        {% endif %}
+
+                    </div>
+                {% endif %}
+                </div>
+              </div>
+             </div>
+        </div>
+    </div>
+</div>

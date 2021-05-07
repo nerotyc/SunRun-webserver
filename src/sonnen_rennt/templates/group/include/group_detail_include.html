@@ -1,0 +1,117 @@
+<div class="main-body">
+    <div class="col-md-8">
+      <div class="card mb-3">
+        <div class="card-body">
+          <div class="row">
+{#              # TODO ersteller#}
+            <div class="col-sm-3">
+              <h6 class="mb-0">Name</h6>
+            </div>
+            <div class="col-sm-9 text-secondary">
+              {{ group.name }}
+            </div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col-sm-3">
+              <h6 class="mb-0">Teilnehmerzahl</h6>
+            </div>
+            <div class="col-sm-9 text-secondary">
+              {{ group.num_participants }}
+            </div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col-sm-3">
+              <h6 class="mb-0">Anzahl Aktivitäten</h6>
+            </div>
+            <div class="col-sm-9 text-secondary">
+              {{ group.run_count }}
+            </div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col-sm-3">
+              <h6 class="mb-0">zurückgelegte Distanz</h6>
+            </div>
+            <div class="col-sm-9 text-secondary">
+                <div style="line-height: 10px!important;">
+                    <i class="material-icons djk-icon">directions_walk</i>&ensp;{{ group.sum_distance_walk|floatformat:-1 }} km<br>
+                    <i class="material-icons djk-icon">directions_run</i>&ensp;{{ group.sum_distance_run|floatformat:-1 }} km<br>
+                    <i class="material-icons djk-icon">directions_bike</i>&ensp;{{ group.sum_distance_bike|floatformat:-1 }} km<br>
+                    <i class="material-icons djk-icon">electric_bike</i>&ensp;{{ group.sum_distance_ebike|floatformat:-1 }} km<br>
+                </div>
+            </div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col-sm-3">
+              <h6 class="mb-0">Aktivitätszeit</h6>
+            </div>
+            <div class="col-sm-9 text-secondary">
+              {{ group.sum_duration|floatformat:-3 }} h
+            </div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col-sm-3">
+              <h6 class="mb-0">Score</h6>
+            </div>
+            <div class="col-sm-9 text-secondary">
+              {{ group.score|floatformat:-1 }} Punkte
+            </div>
+          </div>
+          <hr>
+        {% if group.description %}
+          <div class="row">
+            <div class="col-sm-3">
+              <h6 class="mb-0">Beschreibung</h6>
+            </div>
+            <div class="col-sm-9 text-secondary">
+              {{ group.description }}
+            </div>
+          </div>
+          <hr>
+        {% endif %}
+        {% if not group_details_view  %}
+            <div class="row">
+                <a href="/group/detail/{{ group.id }}/">
+                    <div class="shadow p-3 bg-white rounded">
+                        <div class="djk-action-button">
+                            <i class="material-icons">info</i>
+                        </div>
+                    </div>
+                </a>
+
+                {% if user.profile.id == group.creator.id %}
+                    <a href="/group/delete/{{ group.id }}/">
+                        <div class="shadow p-3 bg-white rounded">
+                            <div class="djk-action-button">
+                                <i class="material-icons">delete</i>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="/group/edit/{{ group.id }}/">
+                        <div class="shadow p-3 bg-white rounded">
+                            <div class="djk-action-button">
+                                <i class="material-icons">edit</i>
+                            </div>
+                        </div>
+                    </a>
+                {% endif %}
+
+                <a href="/group/stats/{{ group.id }}/">
+                    <div class="shadow p-3 bg-white rounded">
+                        <div class="djk-action-button">
+                            <i class="material-icons">assessment</i>
+                        </div>
+                    </div>
+                </a>
+
+            </div>
+        {% endif %}
+
+        </div>
+      </div>
+     </div>
+</div>

@@ -1,0 +1,23 @@
+<div class="card m-xl-4 m-l-4 m-md-2 m-sm-1" style="width: 18rem; display: inline-block;">
+  <div class="card-body">
+    <h5 class="card-title">{{ group.name }}</h5>
+    <h6 class="card-subtitle mb-2 text-muted">von {{ group.creator.user.username }}</h6>
+
+    <p class="card-text"><b>Teilnehmerzahl: </b>{{ group.num_participants }}</p>
+    <p class="card-text"><b>Score: </b>{{ group.score|floatformat:-3 }} Punkte</p>
+
+    {% if group.description %}
+        <p class="card-text"></p>
+        <p class="card-text"><b>Notiz:</b><br>{{ group.description|slice:":128" }}</p>
+    {% endif %}
+
+    <a href="/group/detail/{{ group.id }}" class="card-link"><b>Details</b></a>
+
+    {% if user.profile.id == group.creator.id %}
+        <a class="ml-3" href="/group/delete/{{ group.id }}"><b>Auflösen</b></a><br>
+        <a class="ml-3" href="/group/edit/{{ group.id }}"><b>Bearbeiten</b></a>
+    {% endif %}
+    <a class="ml-3" href="/group/stats/{{ group.id }}"><b>Statistik</b></a>
+
+  </div>
+</div>

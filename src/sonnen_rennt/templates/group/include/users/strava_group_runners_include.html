@@ -1,0 +1,14 @@
+{% block group_stats_user %}
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title font-weight-bold">{{ runner.name }}</h5>
+        <p class="card-text">
+          {{ runner.score|floatformat:-1 }} Punkte in {{ runner.runs }} Aktivitäten | Dauer: {{ runner.duration|floatformat:-1 }} h <br>
+        {{ runner.distance_walk|floatformat:-1 }} km <i class="material-icons djk-icon-small">directions_walk</i> <b>&ensp;| &ensp;</b>
+        {{ runner.distance_run|floatformat:-1 }} km <i class="material-icons djk-icon-small">directions_run</i> <b>&ensp;| &ensp;</b>
+        {{ runner.distance_bike|floatformat:-1 }} km <i class="material-icons djk-icon-small">directions_bike</i> <b>&ensp;| &ensp;</b>
+        {{ runner.distance_ebike|floatformat:-1 }} km <i class="material-icons djk-icon-small">electric_bike</i>
+        </p>
+      </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "dashboard/dashboard_item.html" %}
+
+{% block card_details_color_class %}
+card-header-info
+{% endblock %}
+
+{% block card_details_color %}
+
+{% endblock %}
+
+
+{% block card_detail_icon %}
+emoji_events
+{% endblock %}
+
+
+{% block card_detail_title %}
+Punkte
+{% endblock %}
+
+
+{% block card_detail_detail %}
+    {{ community_stats_week.score|floatformat:-1 }}
+{% endblock %}
+
+{% block card_footer_icon %}
+emoji_events
+{% endblock %}
+
+
+{% block card_footer_text %}
+diese Woche
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+{% include "vendor/profile_card.html" %}
+
+<div class="pr-3 pl-3">
+
+    <div class="container-fluid">
+        <h3 style="font-weight: bold;  font-size: 28px; margin-top: 24px;">Statistiken Community</h3>
+        {% include "dashboard/community/day.html" %}
+        {% include "dashboard/community/month.html" %}
+        <a href="{% url 'dashboard:community' %}">Mehr Gesamtstatistiken</a>
+
+        <br><br>
+        <h3 style="font-weight: bold;  font-size: 28px; margin-top: 24px;">Meine Statistiken</h3>
+
+        {% if user.is_authenticated %}
+            {% include "dashboard/user/day.html" %}
+            {% include "dashboard/user/month.html" %}
+            <a href="{% url 'dashboard:my' %}">Mehr meiner Statistiken</a>
+        {% else %}
+            <div class="container">
+            <a href="/login/" class="btn btn-primary" style="color:white!important">Einloggen</a>
+            </div>
+        {% endif %}
+        <br><br><br><br>
+    </div>
+
+</div>
+
+{% endblock content %}

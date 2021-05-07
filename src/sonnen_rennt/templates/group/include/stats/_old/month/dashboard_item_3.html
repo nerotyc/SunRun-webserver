@@ -1,0 +1,33 @@
+{% extends "dashboard/dashboard_item.html" %}
+
+{% block card_details_color_class %}
+card-header-info
+{% endblock %}
+
+{% block card_details_color %}
+
+{% endblock %}
+
+
+{% block card_detail_icon %}
+access_time_filled
+{% endblock %}
+
+
+{% block card_detail_title %}
+Dauer
+{% endblock %}
+
+
+{% block card_detail_detail %}
+    {{ group_stats_day.duration }}
+{% endblock %}
+
+{% block card_footer_icon %}
+access_time_filled
+{% endblock %}
+
+
+{% block card_footer_text %}
+diesen Monat
+{% endblock %}

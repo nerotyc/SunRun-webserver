@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% include "vendor/profile_card.html" %}
+
+<div class="pr-3 pl-3">
+
+    {% include "route/include/route_header.html" %}
+
+    <h3 style="font-weight: bold;  font-size: 28px; display: inline-block">Routen-Liste</h3><br>
+
+    {% include "route/include/route_for_loop.html" %}
+
+</div>
+
+{% endblock %}

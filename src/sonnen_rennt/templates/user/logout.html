@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% include "vendor/profile_card.html" %}
+
+<div class="pr-3 pl-3">
+
+    <form method="POST">
+        {% csrf_token %}
+        <h2>Willst du dich wirklich ausloggen?</h2>
+        <br><br>
+        <input type="submit" value="Ausloggen" class="btn btn-primary">
+    </form>
+
+</div>
+
+{% endblock %}

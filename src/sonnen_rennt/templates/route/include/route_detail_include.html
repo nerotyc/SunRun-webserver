@@ -1,0 +1,87 @@
+
+<div class="container-fluid">
+    <div class="main-body">
+        {% if user.profile.id == group.creator.id %}
+            <a class="ml-3" href="/group/delete/{{ group.id }}"><b>Auflösen</b></a>
+        {% endif %}
+
+        <div class="col-md-8">
+          <div class="card mb-3">
+            <div class="card-body">
+              <div class="row">
+                 <h3 class="pl-3">{{ route.title }}</h3>
+              </div><br>
+              <div class="row">
+                <div class="col-sm-3">
+                  <h6 class="mb-0">Distanz / Höhenmeter</h6>
+                </div>
+                <div class="col-sm-9 text-secondary">
+                  {{ route.distance }} km / {{ route.elevation_gain }} m
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <h6 class="mb-0">Ersteller</h6>
+                </div>
+                <div class="col-sm-9 text-secondary">
+                  {{ route.creator.user.username }}
+                </div>
+              </div>
+              <hr>
+            {% if route.link %}
+              <div class="row">
+                <div class="col-sm-3">
+                  <h6 class="mb-0">Link für Wegbeschreibung</h6>
+                </div>
+                <div class="col-sm-9 text-secondary">
+                  <a href="{{ route.link }}">{{ route.link }}</a>
+                </div>
+              </div>
+              <hr>
+            {% endif %}
+            {% if route.description %}
+              <div class="row">
+                <div class="col-sm-3">
+                  <h6 class="mb-0">Beschreibung</h6>
+                </div>
+                <div class="col-sm-9 text-secondary">
+                  {{ route.description }}
+                </div>
+              </div>
+              <hr>
+            {% endif %}
+            {% if not route_details_view  %}
+                <div class="row">
+                    <a href="/route/detail/{{ route.id }}/">
+                        <div class="shadow p-3 bg-white rounded">
+                            <div class="djk-action-button">
+                                <i class="material-icons">info</i>
+                            </div>
+                        </div>
+                    </a>
+
+                    {% if user.profile.id == route.creator.id %}
+                        <a href="/route/delete/{{ route.id }}/">
+                            <div class="shadow p-3 bg-white rounded">
+                                <div class="djk-action-button">
+                                    <i class="material-icons">delete</i>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="/route/edit/{{ route.id }}/">
+                            <div class="shadow p-3 bg-white rounded">
+                                <div class="djk-action-button">
+                                    <i class="material-icons">edit</i>
+                                </div>
+                            </div>
+                        </a>
+                    {% endif %}
+
+                </div>
+            {% endif %}
+            </div>
+          </div>
+         </div>
+    </div>
+</div>

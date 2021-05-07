@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% include "vendor/profile_card.html" %}
+
+<div class="pr-3 pl-3">
+
+    {% include "run/include/run_header.html" %}
+
+    <h3 style="font-weight: bold;  font-size: 28px; display: inline-block">Aktivitäten-Liste</h3><br>
+
+    {% include "run/include/run_for_loop.html" %}
+
+    <br>
+    <br>
+
+</div>
+
+{% endblock %}

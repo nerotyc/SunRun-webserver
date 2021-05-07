@@ -1,0 +1,14 @@
+<div class="card m-xl-4 m-l-4 m-md-2 m-sm-1" style="width: 18rem; display: inline-block;">
+  <div class="card-body">
+    <h5 class="card-title">Strava Club</h5>
+
+    <p class="card-text"><b>Teilnehmerzahl: </b>{{ strava_participants_num }}</p>
+    <p class="card-text"><b>Teilnehmerzahl: </b>{{ strava_distance_run }}</p>
+    <p class="card-text"><b>Score: </b>{{ strava_score|floatformat:-3 }} Punkte</p>
+
+    <a href="/strava-run/forward/" class="card-link"><b>Strava Details</b></a>
+
+    <a class="ml-3" href="/group/strava-stats/"><b>Statistik</b></a>
+
+  </div>
+</div>

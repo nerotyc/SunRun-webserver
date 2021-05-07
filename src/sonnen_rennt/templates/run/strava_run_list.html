@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% include "vendor/profile_card.html" %}
+
+<div class="pr-3 pl-3">
+
+    {% include "run/include/run_header.html" %}
+
+    {% include "group/include/strava_group_stats_header_include.html" %}
+
+    <h3 style="font-weight: bold;  font-size: 28px; display: inline-block">Strava Aktivitäten</h3><br>
+
+    {% include "run/include/strava_run_for_loop.html" %}
+
+    <br>
+    <br>
+
+</div>
+
+{% endblock %}

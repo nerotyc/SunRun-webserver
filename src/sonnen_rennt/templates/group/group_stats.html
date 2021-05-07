@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% include "vendor/profile_card.html" %}
+
+<div class="pr-3 pl-3">
+
+    {% include "group/include/group_header.html" %}
+
+    {% include "group/include/group_stats_header_include.html" %}
+
+    {% if tab == "runs" %}
+        {% include "group/include/group_runs_include.html" %}
+    {% elif tab == "runners" %}
+        {% include "group/include/group_runners_include.html" %}
+    {% else %}
+        {% include "group/include/group_stats_include.html" %}
+    {%  endif %}
+
+</div>
+
+{% endblock %}

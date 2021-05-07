@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+{% include "vendor/profile_card.html" %}
+
+<div class="pr-3 pl-3">
+
+    <div class="container-fluid">
+        <h3 style="font-weight: bold;  font-size: 28px; margin-top: 24px;">Meine Statistiken</h3>
+
+        {% include "dashboard/user/day.html" %}
+        {% include "dashboard/user/week.html" %}
+        {% include "dashboard/user/month.html" %}
+        {% include "dashboard/user/year.html" %}
+
+    </div>
+
+</div>
+
+{% endblock content %}

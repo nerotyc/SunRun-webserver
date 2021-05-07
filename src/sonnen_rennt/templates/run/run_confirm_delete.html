@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% include "vendor/profile_card.html" %}
+
+<div class="pr-3 pl-3">
+
+    {% include "run/include/run_header.html" %}
+
+    <h3 style="font-weight: bold;  font-size: 28px; display: inline-block">Willst du folgende Aktivität wirklich löschen?</h3><br>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        {% include "run/include/run_detail_include.html" %}
+
+        <br><br>
+        <input type="submit" value="Löschen" class="btn btn-primary">
+    </form>
+
+    <br>
+    <br>
+
+</div>
+
+{% endblock %}

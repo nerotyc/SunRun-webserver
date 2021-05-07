@@ -1,0 +1,71 @@
+<h3 style="font-weight: bold;  font-size: 28px; display: inline-block">Runs</h3><br>
+
+<h4 style="font-weight: bold; font-size: 18px; display: inline-block">Sortieren nach:</h4>
+<ul class="nav nav-pills">
+  <li class="nav-item">
+    <a class="nav-link text-white m-1
+        {% if sort == 'time' %}
+            active djk-bg-accent
+        {% else %}
+            border border-light
+        {% endif %}"
+       href="?tab=runs&sort=time">Zeit</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link text-white m-1
+        {% if sort == 'duration' %}
+            active djk-bg-accent
+        {% else %}
+            border border-light
+        {% endif %}"
+       href="?tab=runs&sort=duration">Dauer</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link text-white text-white m-1
+        {% if sort == 'distance' %}
+            active djk-bg-accent
+        {% else %}
+            border border-light
+        {% endif %}"
+       href="?tab=runs&sort=distance">Distanz</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link text-white text-white m-1
+        {% if sort == 'distance' %}
+            active djk-bg-accent
+        {% else %}
+            border border-light
+        {% endif %}"
+       href="?tab=runs&sort=score">Punkte</a>
+  </li>
+</ul>
+
+<br>
+<br>
+
+{% if page_obj.object_list|length <= 0 %}
+
+    <div class="alert" role="alert">
+      Keine Aktivitäten vorhanden!
+    </div>
+
+{% else %}
+
+    {% include "include/group_route_run_pagination.html" %}
+    <br>
+
+    {% for run in page_obj.object_list %}
+
+        {% include "group/include/runs/group_runs_item_include.html" %}
+
+    {% endfor %}
+
+    <br>
+    <br>
+
+    {% include "include/group_route_run_pagination.html" %}
+
+{% endif %}
+
+<br>
+<br>

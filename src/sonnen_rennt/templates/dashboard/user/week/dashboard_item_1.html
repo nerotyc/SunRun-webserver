@@ -1,0 +1,40 @@
+{% extends "dashboard/dashboard_item.html" %}
+
+{% block card_details_color_class %}
+card-header-warning
+{% endblock %}
+
+{% block card_details_color %}
+linear-gradient(60deg, #ffa726, #cb851d);
+{% endblock %}
+
+
+{% block card_detail_icon %}
+map
+{% endblock %}
+
+
+{% block card_detail_title %}
+Distanz
+{% endblock %}
+
+
+{% block card_detail_detail %}
+    <div style="line-height: 10px!important;">
+        {{ user_stats_week.distance_walk }} <i class="material-icons djk-icon">directions_walk</i><br>
+        {{ user_stats_week.distance_run }} <i class="material-icons djk-icon">directions_run</i><br>
+        {{ user_stats_week.distance_bike }} <i class="material-icons djk-icon">directions_bike</i><br>
+        {{ user_stats_week.distance_ebike }} <i class="material-icons djk-icon">electric_bike</i><br>
+    </div>
+{#    {{ community_stats_week.distance }}#}
+{% endblock %}
+
+
+{% block card_footer_icon %}
+map
+{% endblock %}
+
+
+{% block card_footer_text %}
+diese Woche
+{% endblock %}

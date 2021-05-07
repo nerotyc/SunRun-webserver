@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+    <form method="POST">
+        {% csrf_token %}
+        <h2>Wollen Sie Ihr Passwort wirklich zurücksetzen?</h2>
+        <br><br>
+        <h3>Email: </h3><p>{{ email }}</p>
+        <br><br>
+        {{ form|crispy  }}
+        <br><br>
+        <input type="submit" value="Bestätigen" class="btn btn-primary">
+    </form>
+
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% include "vendor/profile_card.html" %}
+
+<div class="pr-3 pl-3">
+
+    {% include "route/include/route_header.html" %}
+
+    <h3 style="font-weight: bold;  font-size: 28px; display: inline-block">Willst die Route wirklich löschen?</h3><br>
+
+    {% include "route/include/route_detail_include.html" %}
+
+    <form method="POST">
+        {% csrf_token %}
+        <br><br>
+        <input type="submit" value="Löschen" class="btn btn-primary">
+    </form>
+
+    <br>
+    <br>
+
+</div>
+
+{% endblock %}

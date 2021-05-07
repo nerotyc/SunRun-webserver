@@ -1,0 +1,59 @@
+{% load timedelta_filter %}
+
+<div class="card m-xl-4 m-l-4 m-md-2 m-sm-1" style="width: 18rem; display: inline-block;">
+  <div class="card-body">
+    <h5 class="card-title">
+        {% if run.type == "E-BIKE" %}
+            <i class="material-icons">electric_bike</i>
+        {% elif run.type == "BIKE" %}
+            <i class="material-icons">directions_bike</i>
+        {% elif run.type == "WALK" %}
+            <i class="material-icons">directions_walk</i>
+        {% else %}
+{#            RUN #}
+            <i class="material-icons">directions_run</i>
+        {% endif %}
+
+        {{ run.time_start }}
+
+    </h5>
+      <h5>
+            von {% if run.profile_handle %}
+                <a href="https://www.strava.com/athletes/{{ run.profile_handle }}"
+                   style="font-weight: bold;">{{ run.creator }}</a>
+            {% else %}
+                {{ run.creator }}
+            {% endif %}
+      </h5>
+
+    <p class="card-text"><b>Distanz / Höhenmeter: </b>{{ run.distance|floatformat:-1 }} km / {{ run.elevation_gain|floatformat:0 }} m</p>
+    <p class="card-text"><b>Dauer: </b>{{ run.duration|timedelta:"{hours2}h {minutes2}min {seconds2}sek" }}</p>
+
+    {% if run.note %}
+        <p class="card-text"><b>Notiz: </b>{{ run.note }}</p>
+    {% endif %}
+
+    {% if run.route_handle %}
+        <p class="card-text"><b>Routen Details: </b>
+            <a href="https://www.strava.com/activities/{{ run.route_handle }}"
+                   style="font-weight: bold;">weiter zu Strava</a>
+        </p>
+    {% endif %}
+
+    <p class="card-text"><b>Gruppe: </b><br>
+        <a href="/group/strava-stats/" style="font-weight: bold;" class="card-link">Strava Gruppe</a><br>
+        <a href="/strava-run/forward/" style="font-weight: bold;" class="card-link">Strava Club</a>
+    </p>
+
+    {% if run.note %}
+        <p class="card-text"><strong>Notiz:</strong><br>{{ run.note|slice:":128" }}</p>
+    {% endif %}
+
+    {% if run.strava_handle %}
+        <a href="https://www.strava.com/activities/{{ run.strava_handle }}/" class="card-link"><b>Lauf bei Strava anzeigen</b></a>
+    {% endif %}
+
+    <p class="card-text">
+    </p>
+  </div>
+</div>

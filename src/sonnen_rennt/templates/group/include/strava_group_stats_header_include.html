@@ -1,0 +1,44 @@
+<h3 style="font-weight: bold;  font-size: 28px; display: inline-block">Statistikoptionen</h3>
+
+<ul class="nav nav-pills">
+
+    {% if tab == 'runners' %}
+        <li class="nav-item active">
+            <a class="nav-link btn btn-primary"
+               href="/group/strava-stats/?tab=runners"
+               style="color: white!important;">
+                <i class="material-icons">groups</i> Teilnehmer
+            </a>
+        </li>
+    {% else %}
+        <li class="nav-item">
+            <a class="nav-link text-white border border-light m-1"
+               href="/group/strava-stats/?tab=runners"
+               style="color: white!important;">
+                <i class="material-icons">groups</i> Teilnehmer
+            </a>
+        </li>
+    {% endif %}
+
+    {% if tab == 'runs' %}
+        <li class="nav-item active">
+            <a class="nav-link btn btn-primary"
+               href="/strava-run/list/?tab=runs"
+               style="color: white!important;">
+                <i class="material-icons">directions_run</i> Aktivitäten
+            </a>
+        </li>
+    {% else %}
+        <li class="nav-item">
+            <a class="nav-link text-white border border-light m-1"
+               href="/strava-run/list/?tab=runs"
+               style="color: white!important;">
+                <i class="material-icons">directions_run</i> Aktivitäten
+            </a>
+        </li>
+    {% endif %}
+
+</ul>
+
+<br>
+<br>

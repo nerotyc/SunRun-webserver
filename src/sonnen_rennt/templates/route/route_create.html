@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="p-l-4 p-ml-3 p-sm-3">
+        <a href="/route/help/">Hilfe für Routenerstellung</a><br><br>
+
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Speichern" class="btn btn-primary">
+        </form>
+    </div>
+
+{% endblock %}

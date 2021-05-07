@@ -1,0 +1,35 @@
+{% extends "dashboard/dashboard_item.html" %}
+
+{% block card_details_color_class %}
+card-header-warning
+{% endblock %}
+
+{% block card_details_color %}
+linear-gradient(60deg, #ffa726, #cb851d);
+{% endblock %}
+
+
+{% block card_detail_icon %}
+content_copy
+{% endblock %}
+
+
+{% block card_detail_title %}
+Distanz
+{% endblock %}
+
+
+{% block card_detail_detail %}
+ km
+{#    {{ stats_day.distance }}#}
+{% endblock %}
+
+
+{% block card_footer_icon %}
+flag
+{% endblock %}
+
+
+{% block card_footer_text %}
+heute
+{% endblock %}

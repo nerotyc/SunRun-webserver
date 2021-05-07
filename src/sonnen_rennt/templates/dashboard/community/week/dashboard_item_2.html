@@ -1,0 +1,35 @@
+{% extends "dashboard/dashboard_item.html" %}
+
+{% block card_details_color_class %}
+card-header-success
+{% endblock %}
+
+{% block card_details_color %}
+{% endblock %}
+
+
+{% block card_detail_icon %}
+access_time_filled
+{% endblock %}
+
+
+{% block card_detail_title %}
+Dauer / Aktivitäten
+{% endblock %}
+
+
+{% block card_detail_detail %}
+    {{ community_stats_week.duration }}<br>
+    in {{ community_stats_week.count }}<br>
+    Aktivitäten
+{% endblock %}
+
+
+{% block card_footer_icon %}
+access_time_filled
+{% endblock %}
+
+
+{% block card_footer_text %}
+diese Woche
+{% endblock %}

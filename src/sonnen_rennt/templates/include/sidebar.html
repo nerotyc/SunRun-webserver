@@ -1,0 +1,140 @@
+{% load static %}
+
+<div class="sidebar djk-bg-darker"
+     data-color="djk" data-background-color="white">
+
+{#style="display: block; " #}
+
+{#      <div class="logo"><a href="http://www.creative-tim.com" class="simple-text logo-normal">#}
+{#          Creative Tim#}
+{#        </a></div>#}
+{#      <div class="sidebar-wrapper">#}
+{#        <ul class="nav">#}
+{#          <li class="nav-item active  ">#}
+{#            <a class="nav-link" href="./dashboard.html">#}
+{#              <i class="material-icons">dashboard</i>#}
+{#              <p>Dashboard</p>#}
+{#            </a>#}
+{#          </li>#}
+{#          <li class="nav-item ">#}
+{#            <a class="nav-link" href="./user.html">#}
+{#              <i class="material-icons">person</i>#}
+{#              <p>User Profile</p>#}
+{#            </a>#}
+{#          </li>#}
+{#          <li class="nav-item ">#}
+{#            <a class="nav-link" href="./tables.html">#}
+{#              <i class="material-icons">content_paste</i>#}
+{#              <p>Table List</p>#}
+{#            </a>#}
+{#          </li>#}
+{#          <li class="nav-item ">#}
+{#            <a class="nav-link" href="./typography.html">#}
+{#              <i class="material-icons">library_books</i>#}
+{#              <p>Typography</p>#}
+{#            </a>#}
+{#          </li>#}
+{#          <li class="nav-item ">#}
+{#            <a class="nav-link" href="./icons.html">#}
+{#              <i class="material-icons">bubble_chart</i>#}
+{#              <p>Icons</p>#}
+{#            </a>#}
+{#          </li>#}
+{#          <li class="nav-item ">#}
+{#            <a class="nav-link" href="./map.html">#}
+{#              <i class="material-icons">location_ons</i>#}
+{#              <p>Maps</p>#}
+{#            </a>#}
+{#          </li>#}
+{#          <li class="nav-item ">#}
+{#            <a class="nav-link" href="./notifications.html">#}
+{#              <i class="material-icons">notifications</i>#}
+{#              <p>Notifications</p>#}
+{#            </a>#}
+{#          </li>#}
+{#          <li class="nav-item ">#}
+{#            <a class="nav-link" href="./rtl.html">#}
+{#              <i class="material-icons">language</i>#}
+{#              <p>RTL Support</p>#}
+{#            </a>#}
+{#          </li>#}
+{#          <li class="nav-item active-pro ">#}
+{#            <a class="nav-link" href="./upgrade.html">#}
+{#              <i class="material-icons">unarchive</i>#}
+{#              <p>Upgrade to PRO</p>#}
+{#            </a>#}
+{#          </li>#}
+{#        </ul>#}
+{#      </div>#}
+
+      <a href="https://djk-sonnen.de/" target="_blank">
+          <div style="width: 100%; display:block;" class="logo">
+            <img style="width: 100%; padding: 0 70px 0 70px; " src="{% static 'vendor/material-dashboard/assets/img/logo_border.png' %}">
+          </div>
+      </a>
+      <div style="width: 100%; display: block; align-content: center; text-align: center; " class="logo">
+        <a href="/" style="color: white!important;">
+            <h1 style="display: inline-block; font-weight: bold; font-size: 28px; padding: 15px 0 15px 0; ">SunRun!</h1>
+        </a>
+      </div>
+      <div class="sidebar-wrapper">
+        <ul class="nav d-lg-block d-md-none d-sm-none">
+          <li class="nav-item active">
+            <a class="nav-link" href="/">
+              <i class="material-icons">dashboard</i>
+              <p class="text-white">Dashboard</p>
+            </a>
+          </li>
+        {% if user.is_authenticated %}
+          <li class="nav-item active">
+            <a class="nav-link" href="/group/list-user/">
+              <i class="material-icons">groups</i>
+              <p class="text-white">Meine Gruppen</p>
+            </a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/run/list-user/">
+              <i class="material-icons">directions_run</i>
+              <p class="text-white">Meine Aktivitäten</p>
+            </a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/route/list-user/">
+              <i class="material-icons">map</i>
+              <p class="text-white">Meine Routen</p>
+            </a>
+          </li>
+
+
+          <li class="nav-item active">
+            <a class="nav-link" href="/logout/">
+              <i class="material-icons">logout</i>
+              <p class="text-white">Abmelden</p>
+            </a>
+          </li>
+        {% else %}
+          <li class="nav-item active">
+            <a class="nav-link" href="/register/">
+              <i class="material-icons">person</i>
+              <p class="text-white">Registrieren</p>
+            </a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/login/">
+              <i class="material-icons">login</i>
+              <p class="text-white">Anmelden</p>
+            </a>
+          </li>
+        {% endif %}
+            <div style="width: 100%; display: block; align-content: center; text-align: center;" class="logo">
+                <h3 style="font-size: 20px!important;">Schrittzähler <br>gesponsert von:</h3>
+            </div>
+
+            <a href="https://aok.de/" target="_blank">
+                <div style="display: block; align-content: center; text-align: center;">
+                    <img src="/media/sponsors/aok_logo.png" style="width: 80%; display: inline-block; margin: 0 auto 0 auto">
+                </div>
+            </a>
+        </ul>
+      </div>
+</div>

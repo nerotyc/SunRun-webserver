@@ -1,0 +1,30 @@
+{% if user.is_authenticated %}
+    <div>
+        <h3 style="font-weight: bold;  font-size: 28px; display: inline-block">Gruppen</h3>
+        <br>
+        <a href="/group/score-help/"><i class="material-icons djk-icon">info</i> Berechnung des Punkte Scores</a>
+        <br>
+        <br>
+        <h4>{{ group_counter }} von {{ group_max_counter }} Gruppen erstellt!</h4>
+        <br>
+        <ul class="nav">
+            {% if group_can_create %}
+                <li class="nav-item active">
+                    <a class="nav-link btn btn-primary m-1" href="/group/create/"
+                       style="color: white!important;">
+                        <i class="material-icons">group_add</i> Gruppe erstellen
+                    </a>
+                </li>
+            {% endif %}
+            <li class="nav-item active">
+                <a class="nav-link btn btn-primary m-1" href="/group/list-user/"
+                   style="color: white!important;">
+                    <i class="material-icons">list</i> Meine Gruppen
+                </a>
+            </li>
+        </ul>
+
+        <br>
+
+    </div>
+{% endif %}

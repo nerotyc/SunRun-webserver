@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% include "vendor/profile_card.html" %}
+
+<div class="pr-3 pl-3">
+
+    {% include "group/include/group_header.html" %}
+
+    {% include "group/include/group_stats_header_include.html" %}
+
+    <h3 style="font-weight: bold;  font-size: 28px; display: inline-block">Gruppen Details:</h3>
+
+    {% include "group/include/group_detail_include.html" %}
+
+</div>
+
+{% endblock %}

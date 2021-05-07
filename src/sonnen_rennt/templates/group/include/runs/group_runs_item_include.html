@@ -1,0 +1,26 @@
+{% load timedelta_filter %}
+
+{% block group_stats_user %}
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title font-weight-bold">{{ run.name }} ({{ run.username }})</h5>
+        <h6 class="card-subtitle mb-2 text-muted" style="color: #999999!important;">{{ run.time_start }}</h6>
+        <p class="card-text">
+          {{ run.score|floatformat:-1 }} Punkte in {{ run.distance|floatformat:-1 }} km
+
+            {% if run.type == "WALK" %}
+                <i class="material-icons djk-icon-small">directions_walk</i>
+            {% elif run.type == "RUN" %}
+                <i class="material-icons djk-icon-small">directions_run</i>
+            {% elif run.type == "BIKE" %}
+                <i class="material-icons djk-icon-small">directions_bike</i>
+            {% else %}
+{#                E-BIKE #}
+                <i class="material-icons djk-icon-small">electric_bike</i>
+            {% endif %}
+             &ensp;| &ensp; Dauer: {{ run.duration|floatformat:-1 }} h <br>
+        </p>
+{#        <a href="#" class="btn btn-primary text-white">Go somewhere</a>#}
+      </div>
+    </div>
+{% endblock %}
