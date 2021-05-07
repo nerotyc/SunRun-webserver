@@ -6,6 +6,17 @@
 At [run.djk-sonnen.de](https://run.djk-sonnen.de/) you can see the system in production.
 You can 
 
+## Screenshots
+
+![dashboard screenshot](/_media/screenshots/dashboard.jpg?raw=true "dashboard")
+
+![group statistics screenshot](/_media/screenshots/screen_group_stats.jpg?raw=true "group statistics")
+
+![user profile screenshot](/_media/screenshots/screen_user_profile.jpg?raw=true "user profile")
+
+## Disclaimer
+Note that this software is in an early stage of development and therefore is likely to have bugs.
+
 ## Installation
 ### 1. Python installation
 
