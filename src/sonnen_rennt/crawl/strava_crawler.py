@@ -40,7 +40,7 @@ def read_credential():
     else:  # currently in sonnen_rennt folder
         file_path = ''
 
-    file_path = file_path + '../../.config/crawl-strava_login.yml'
+    file_path = file_path + '../../.config/.crawl-strava_login.yml'
 
     with open(file_path) as f:
         data = yaml.load(f, Loader=yaml.FullLoader)
@@ -59,7 +59,7 @@ def write_credential(email, password):
     else:  # currently in sonnen_rennt folder
         file_path = ''
 
-    file_path = file_path + '../../.config/crawl-strava_login.yml'
+    file_path = file_path + '../../.config/.crawl-strava_login.yml'
 
     with open(file_path, 'w+') as f:
         credentials = {

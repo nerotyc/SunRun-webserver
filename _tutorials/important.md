@@ -35,3 +35,23 @@ strava_crawler.fetch_insert_strava_runs()
 
 ## Fake migrations
 https://simpleisbetterthancomplex.com/tutorial/2016/07/26/how-to-reset-migrations.html
+
+
+## Linux Loop Crawling:
+# TODO: as a script
+```
+while true
+do
+screen -L -S strava_crawler sh __helper_crawl_strava.sh
+sleep 20
+done
+```
+```
+while true
+do
+        echo "start daily crawling job...";
+        python3 crawl_strava.py;
+        echo "finished daily crawling job.";
+        sleep 86400
+done
+```

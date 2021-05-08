@@ -2,13 +2,28 @@
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
+DOT_ENV_STRING = str(str(Path(__file__).resolve().parent.parent.parent.parent) + "\.config\.django.env")
+load_dotenv(DOT_ENV_STRING)
+
+from django.core.exceptions import ImproperlyConfigured
+
+def get_env_value(env_variable):
+    try:
+      	return os.environ.get(env_variable)
+    except KeyError:
+        error_msg = 'Set the {} environment variable'.format(var_name)
+        raise ImproperlyConfigured(error_msg)
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'd%kv!w6hrg($)icrgi2@t$0&wm4e+3302k^c#qj_sj(dze@v8*'
+SECRET_KEY = get_env_value('SECRET_KEY')
 
-DEBUG = False
+DEBUG = get_env_value('DEBUG')
+
 DB_LOCAL = True  # whether to use home mysql etc. or production
 PRODUCTION_STATIC_DIRS = True
 
@@ -97,40 +112,28 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'sonnen_rennt.wsgi.application'
 
-if DB_LOCAL:
-    DATABASES = {
-        'default': {
-            # 'ENGINE': 'django.db.backends.sqlite3',
-            # 'NAME': BASE_DIR / 'db.sqlite3',
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'djksonnen_run',
-            'USER': 'root',
-            'PASSWORD': 'djkSonnenRootPW',
-            'HOST': '192.168.178.21',
-            'PORT': '3307',
-            'OPTIONS': {'charset': 'utf8mb4'},
-            # 'OPTIONS': {
-            #     'read_default_file': '/sql_db.cnf',
-            # },
-        }
+DB_HOST= get_env_value('DATABASE_HOST')
+DB_NAME= get_env_value('DATABASE_NAME')
+DB_PORT= str(get_env_value('DATABASE_PORT'))
+DB_USER= get_env_value('DATABASE_USER')
+DB_PASSWORD= get_env_value('DATABASE_PASSWORD')
+
+DATABASES = {
+    'default': {
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': DB_NAME,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASSWORD,
+        'HOST': DB_HOST,
+        'PORT': '3307',
+        'OPTIONS': {'charset': 'utf8mb4'},
+        # 'OPTIONS': {
+        #     'read_default_file': '/sql_db.cnf',
+        # },
     }
-else:  # PRODUCTION
-    DATABASES = {
-        'default': {
-            # 'ENGINE': 'django.db.backends.sqlite3',
-            # 'NAME': BASE_DIR / 'db.sqlite3',
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'djksonnen_run',
-            'USER': 'root',
-            'PASSWORD': 'djkSonnenRootPW',
-            'HOST': '127.0.0.1',
-            'PORT': '3307',
-            'OPTIONS': {'charset': 'utf8mb4'},
-            # 'OPTIONS': {
-            #     'read_default_file': '/sql_db.cnf',
-            # },
-        }
-    }
+}
 
 
 # Password validation
@@ -190,11 +193,11 @@ LOGIN_URL = '/user/login/'
 
 # SMTP Configuration
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.strato.de'  # 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'noreply@djk-sonnen.de'
-EMAIL_HOST_PASSWORD = 'd_gAs2(GYJegpiH'
-
-SERVER_EMAIL = 'noreply@djk-sonnen.de'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.strato.de'  # 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'noreply@djk-sonnen.de'
+# EMAIL_HOST_PASSWORD = ''
+#
+# SERVER_EMAIL = 'noreply@djk-sonnen.de'

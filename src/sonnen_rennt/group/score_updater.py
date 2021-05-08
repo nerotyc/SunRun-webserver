@@ -43,9 +43,9 @@ def read_strava_data():
     global strava_score
 
     if str(os.getcwd()).split("\\")[-1] == 'crawl':
-        file_path = '../group/strava_group_data.yml'
+        file_path = '../group/.strava_group_data.yml'
     else:
-        file_path = 'group/strava_group_data.yml'
+        file_path = 'group/.strava_group_data.yml'
 
     with open(file_path) as f:
         data = yaml.load(f, Loader=yaml.FullLoader)
@@ -79,9 +79,9 @@ def _write_strava_data(group_score: GroupScore):
     global strava_score
 
     if str(os.getcwd()).split("\\")[-1] == 'crawl':
-        file_path = '../group/strava_group_data.yml'
+        file_path = '../group/.strava_group_data.yml'
     else:
-        file_path = 'group/strava_group_data.yml'
+        file_path = 'group/.strava_group_data.yml'
 
     with open(file_path, 'w+') as f:
         data = {
