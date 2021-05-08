@@ -1,4 +1,3 @@
-#!/bin/sh
 
 CALLER_FOLDER=$(pwd)
 SRC_FOLDER="$(dirname $0)""/../src/sonnen_rennt/"

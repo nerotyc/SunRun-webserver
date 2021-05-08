@@ -4,7 +4,8 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-DOT_ENV_STRING = str(str(Path(__file__).resolve().parent.parent.parent.parent) + "\.config\.django.env")
+sep = os.path.sep
+DOT_ENV_STRING = str(str(Path(__file__).resolve().parent.parent.parent.parent) + f"{sep}.config{sep}.django.env")
 load_dotenv(DOT_ENV_STRING)
 
 from django.core.exceptions import ImproperlyConfigured
@@ -25,7 +26,7 @@ SECRET_KEY = get_env_value('SECRET_KEY')
 DEBUG = get_env_value('DEBUG')
 
 DB_LOCAL = True  # whether to use home mysql etc. or production
-PRODUCTION_STATIC_DIRS = True
+PRODUCTION_STATIC_DIRS = False
 
 SECURE_SSL_REDIRECT = False
 
@@ -180,7 +181,8 @@ if not PRODUCTION_STATIC_DIRS:
 
 else:  # PRODUCTION
     STATIC_URL = '/static/'
-    STATIC_ROOT = os.path.join(BASE_DIR, 'templates/')
+    STATIC_ROOT = os.path.join(BASE_DIR, 'templates')
+    print("STATIC_ROOT: ", STATIC_ROOT)
 
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

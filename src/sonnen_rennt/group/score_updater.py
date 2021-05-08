@@ -38,11 +38,12 @@ class GroupScore:
 
 strava_score = GroupScore(0, 0, 0, 0, 0, 0, 0, 0)
 
+sep = os.path.sep
 
 def read_strava_data():
     global strava_score
 
-    if str(os.getcwd()).split("\\")[-1] == 'crawl':
+    if str(os.getcwd()).split(sep)[-1] == 'crawl':
         file_path = '../group/.strava_group_data.yml'
     else:
         file_path = 'group/.strava_group_data.yml'
@@ -78,7 +79,7 @@ def read_strava_data():
 def _write_strava_data(group_score: GroupScore):
     global strava_score
 
-    if str(os.getcwd()).split("\\")[-1] == 'crawl':
+    if str(os.getcwd()).split(sep)[-1] == 'crawl':
         file_path = '../group/.strava_group_data.yml'
     else:
         file_path = 'group/.strava_group_data.yml'

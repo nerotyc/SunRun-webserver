@@ -31,11 +31,12 @@ from group import score_updater
 strava_email = None
 strava_password = None
 
+sep = os.path.sep
 
 def read_credential():
     global strava_email, strava_password
 
-    if str(os.getcwd()).split("\\")[-1] == 'crawl':
+    if str(os.getcwd()).split(sep)[-1] == 'crawl':
         file_path = '../'
     else:  # currently in sonnen_rennt folder
         file_path = ''
@@ -53,8 +54,7 @@ def read_credential():
 
 
 def write_credential(email, password):
-
-    if str(os.getcwd()).split("\\")[-1] == 'crawl':
+    if str(os.getcwd()).split(sep)[-1] == 'crawl':
         file_path = '../'
     else:  # currently in sonnen_rennt folder
         file_path = ''
@@ -77,7 +77,6 @@ returns list with runs dicts:
     ...
 ]
 """
-
 
 def _get_distance_elevation_duration_from_inline_stats_block(inline_stats_block):
     distance = 0  # km
@@ -179,21 +178,20 @@ def _get_time_start(feed_entry):
 def fetch_all_strava_runs():
     read_credential()
 
-    # TODO auto enable at production
-    # chrome_options = Options()
-    # chrome_options.add_argument("start-maximized")  # open Browser in maximized mode
-    # chrome_options.add_argument("disable-infobars")  # disabling infobars
-    # chrome_options.add_argument("--disable-extensions")  # disabling extensions
-    # chrome_options.add_argument("--disable-gpu")  # applicable to windows os only
-    # chrome_options.add_argument("--disable-dev-shm-usage")  # overcome limited resource problems
-    # chrome_options.add_argument('--headless')
-    # chrome_options.add_argument("--no-sandbox")  # Bypass OS security model
-    # driver = webdriver.Chrome('/usr/bin/chromedriver', chrome_options=chrome_options)
+    if sys.platform == "linux" or sys.platform == "linux2":
+        chrome_options = Options()
+        chrome_options.add_argument("start-maximized")  # open Browser in maximized mode
+        chrome_options.add_argument("disable-infobars")  # disabling infobars
+        chrome_options.add_argument("--disable-extensions")  # disabling extensions
+        chrome_options.add_argument("--disable-gpu")  # applicable to windows os only
+        chrome_options.add_argument("--disable-dev-shm-usage")  # overcome limited resource problems
+        chrome_options.add_argument('--headless')
+        chrome_options.add_argument("--no-sandbox")  # Bypass OS security model
+        driver = webdriver.Chrome('/usr/bin/chromedriver', chrome_options=chrome_options)
+    else:  # platform == "win32"
+        driver = webdriver.Chrome()
 
-    driver = webdriver.Chrome()
-    # driver.get("http://www.python.org")
-    # driver.get("https://www.strava.com/clubs/849711/recent_activity")  # old club
-    driver.get("https://www.strava.com/clubs/895672/recent_activity")
+    driver.get("https://www.strava.com/clubs/895672/recent_activity") # old club: 849711
     print(driver.title)
 
     # assert "Sonnen" in driver.title

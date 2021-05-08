@@ -1,4 +1,3 @@
-#!/bin/sh
 
 SRC_FOLDER="$(dirname $0)""/../src/sonnen_rennt/"
 

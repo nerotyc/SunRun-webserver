@@ -38,6 +38,8 @@ py -m pip install --upgrade pip
 ```
 
 ```
+sudo apt install virtualenv
+or
 pip install virtualenv
 or
 py -m pip install --user virtualenv
@@ -46,7 +48,11 @@ py -m pip install --user virtualenv
 ### 3. Create virtual environment
 maxOS & Linux
 ```
+virtualenv --python=python3 env
+or
 python3 -m venv env
+or 
+apt-get install python3-venv
 ```
 
 Windows:
@@ -79,6 +85,7 @@ _scripts/_(_)?setup.(sh|bat)
 ---
 ## ToDo's
 1. Resetting passwords by email (setting up mail server)
+2. setup scripts: create .config folder if not existing
 
 ---
 
