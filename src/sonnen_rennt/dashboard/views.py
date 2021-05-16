@@ -176,7 +176,7 @@ def default_view(request, *args, **kargs):
             (day_distance_score + strava_day_distance_score),
         ),
         'stats_community_month_progressbar_text':
-            str(int((community_month_score_sum / goal_community_month)) * 100) + " %" +
+            str(int((community_month_score_sum * 100.0 / goal_community_month))) + " %" +
             " (" + str(int(community_month_score_sum)) + "/" + str(int(goal_community_month)) + " km)",
         'community_stats_month': StatsRow(
             '% 6.0f' % (month_distance_walk + strava_month_distance_walk) + ' km',
@@ -574,7 +574,7 @@ def community_view(request, *args, **kargs):
             (week_distance_score + strava_week_distance_score),
         ),
         'stats_community_month_progressbar_text':
-            str(int((community_month_score_sum / goal_community_month)) * 100) + " %" +
+            str(int((community_month_score_sum * 100.0 / goal_community_month))) + " %" +
             " (" + str(int(community_month_score_sum)) + "/" + str(int(goal_community_month)) + " km)",
         'community_stats_month': StatsRow(
             '% 6.0f' % (month_distance_walk + strava_month_distance_walk) + ' km',
