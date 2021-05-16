@@ -176,7 +176,7 @@ def default_view(request, *args, **kargs):
             (day_distance_score + strava_day_distance_score),
         ),
         'stats_community_month_progressbar_text':
-            str(int((community_month_score_sum / goal_community_month))) +
+            str(int((community_month_score_sum / goal_community_month)) * 100) + " %" +
             " (" + str(int(community_month_score_sum)) + "/" + str(int(goal_community_month)) + " km)",
         'community_stats_month': StatsRow(
             '% 6.0f' % (month_distance_walk + strava_month_distance_walk) + ' km',
@@ -286,13 +286,16 @@ def default_view(request, *args, **kargs):
 
     # messages.success(request, "SunRun hat begonnen! Sie k      nnen jetzt Daten einf      gen! Viel Spa   ^=!")
 
-    messages.success(request,
-                     "Witterungsbedingt wird das offizielle SunRun Event bis Mitte Mai verlängert. Die Website samt ihrer Daten bleibt aber danach zur freien Verwendung online!")
-    messages.warning(request,
-                     "Zukünftig werden die Strava Club-Daten automatisiert importiert! Bitte stellen Sie sicher, dass "
-                     "Sie Daten nur auf einer Plattform erfassen!")
+    # messages.success(request,
+    #                  "Witterungsbedingt wird das offizielle SunRun Event bis Mitte Mai verlängert. Die Website samt ihrer Daten bleibt aber danach zur freien Verwendung online!")
+    # messages.warning(request,
+    #                  "Zukünftig werden die Strava Club-Daten automatisiert importiert! Bitte stellen Sie sicher, dass "
+    #                  "Sie Daten nur auf einer Plattform erfassen!")
+    #
+    # messages.success(request, "Jetzt können Emojis verwendet werden 😍👍👌")
 
-    messages.success(request, "Jetzt können Emojis verwendet werden 😍👍👌")
+    messages.success(request, "Das offiziele SunRun Event ist beendet. Wir führen jetzt die Daten zusammen.")
+    messages.info(request, "Die Ergebnisse werden in den kommenden Tagen auf unserer Hauptseite (djk-sonnen.de) veröffentlicht.")
 
     return render(request, "dashboard/default/dashboard.html", context)
 
@@ -571,7 +574,7 @@ def community_view(request, *args, **kargs):
             (week_distance_score + strava_week_distance_score),
         ),
         'stats_community_month_progressbar_text':
-            str(int((community_month_score_sum / goal_community_month))) +
+            str(int((community_month_score_sum / goal_community_month)) * 100) + " %" +
             " (" + str(int(community_month_score_sum)) + "/" + str(int(goal_community_month)) + " km)",
         'community_stats_month': StatsRow(
             '% 6.0f' % (month_distance_walk + strava_month_distance_walk) + ' km',

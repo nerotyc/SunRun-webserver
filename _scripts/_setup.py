@@ -59,7 +59,7 @@ SERVER_EMAIL = '{email_server_email}'\n
 
     file_path = '../.config/.django.env'
 
-    text_file = open(file_path, "w")
+    text_file = open(file_path, "w+")
     text_file.write(file_string)
     text_file.close()
 
