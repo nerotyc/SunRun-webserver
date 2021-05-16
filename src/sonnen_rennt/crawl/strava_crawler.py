@@ -87,13 +87,13 @@ def _get_distance_elevation_duration_from_inline_stats_block(inline_stats_block)
     for li_child in stats_children:
         if li_child.get_attribute('title') == "Distance":
             distance_str = li_child.text
-            distance = float(str(distance_str).replace("km", ""))
+            distance = float(str(distance_str).replace("km", "").replace(",", ""))  # ","-thousand separator
         elif li_child.get_attribute('title') == "Elev Gain":
             elevation_gain_str = str(li_child.text)
             if "km" in elevation_gain_str:
-                elevation_gain = float(elevation_gain_str.replace("km", "")) * 1000
+                elevation_gain = float(elevation_gain_str.replace("km", "").replace(",", "")) * 1000  # ","-thousand separator
             else:
-                elevation_gain = float(elevation_gain_str.replace("m", ""))
+                elevation_gain = float(elevation_gain_str.replace("m", "").replace(",", ""))  # ","-thousand separator
 
         elif li_child.get_attribute('title') == "Time":
             duration_str = str(li_child.text)
