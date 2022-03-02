@@ -1,8 +1,8 @@
-num_participants: 23
-run_count: 192
-score: 1495.0100000000007
-sum_distance_bike: 0
+num_participants: 9
+run_count: 51
+score: 813.4966666666667
+sum_distance_bike: 541.12
 sum_distance_ebike: 0
-sum_distance_run: 1495.0100000000007
+sum_distance_run: 452.75
 sum_distance_walk: 0
-sum_duration: 22.230555555555554
+sum_duration: 3.117777777777778

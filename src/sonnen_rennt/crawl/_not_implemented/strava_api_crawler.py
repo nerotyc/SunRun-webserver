@@ -179,6 +179,7 @@ def fetch_insert_group_activities(access_token):
 
                     StravaRun(
                         # TODO strava_handle=
+                        # TODO: strava_group_handle
                         creator=athlete,
                         distance=run_distance,
                         elevation_gain=run_elevation_gain,

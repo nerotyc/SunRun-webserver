@@ -1,4 +1,5 @@
-from datetime import datetime, timedelta
+import json
+from datetime import datetime, timedelta, date
 
 import re
 
@@ -8,14 +9,19 @@ import yaml
 import time
 
 import os
-import os
 import sys
 import inspect
 
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.chrome.options import Options
+
+# [ LOGGING ] ############################################
+import logging
+logging.basicConfig(filename='strava_crawler.log', encoding='utf-8', level=logging.INFO)
+##########################################################
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -32,6 +38,7 @@ strava_email = None
 strava_password = None
 
 sep = os.path.sep
+
 
 def read_credential():
     global strava_email, strava_password
@@ -78,104 +85,147 @@ returns list with runs dicts:
 ]
 """
 
-def _get_distance_elevation_duration_from_inline_stats_block(inline_stats_block):
-    distance = 0  # km
-    elevation_gain = 0  # m
-    duration = timedelta(seconds=0)
-
-    stats_children = inline_stats_block.find_elements_by_tag_name('li')
-    for li_child in stats_children:
-        if li_child.get_attribute('title') == "Distance":
-            distance_str = li_child.text
-            distance = float(str(distance_str).replace("km", "").replace(",", ""))  # ","-thousand separator
-        elif li_child.get_attribute('title') == "Elev Gain":
-            elevation_gain_str = str(li_child.text)
-            if "km" in elevation_gain_str:
-                elevation_gain = float(elevation_gain_str.replace("km", "").replace(",", "")) * 1000  # ","-thousand separator
-            else:
-                elevation_gain = float(elevation_gain_str.replace("m", "").replace(",", ""))  # ","-thousand separator
-
-        elif li_child.get_attribute('title') == "Time":
-            duration_str = str(li_child.text)
-
-            hours_str = re.search('[0-9]+h', duration_str)
-            mins_str = re.search('[0-9]+m', duration_str)
-            secs_str = re.search('[0-9]+s', duration_str)
-
-            hours = hours_str[0].replace("h", "") if hours_str else 0
-            mins = mins_str[0].replace("m", "") if mins_str else 0
-            secs = secs_str[0].replace("s", "") if secs_str else 0
-
-            duration = timedelta(hours=int(hours), minutes=int(mins), seconds=int(secs))
-
-    return {
-        'distance': distance,
-        'elevation_gain': elevation_gain,
-        'duration': duration,
-    }
-
-
-def _get_name_title_profile_handle_type_distance_elevation_duration(feed_entry: WebElement):
-    name = None
-    title = None
-    profile_handle = None
-    type = Run.TYPE_RUN
-    distance = 0  # km
-    elevation_gain = 0  # m
-    duration = timedelta(seconds=0)
-
-    name_field = feed_entry.find_element_by_class_name("entry-athlete")
-    if name_field:
-        name = name_field.text
-        try:
-            profile_handle_str = str(name_field.get_attribute("href") or "0").replace(
-                "https://www.strava.com/athletes/", ""
-            )
-            profile_handle = numpy.uint64(profile_handle_str)
-        except:
-            x = True
-
-    title_field = feed_entry.find_element_by_class_name("entry-title")
-    if title_field:
-        title = title_field.text
-        title = title_field.text
-
-    inline_stats_block = feed_entry.find_element_by_class_name("inline-stats")
-    if inline_stats_block:
-        data = _get_distance_elevation_duration_from_inline_stats_block(inline_stats_block)
-        distance = data['distance']
-        elevation_gain = data['elevation_gain']
-        duration = data['duration']
-
-    return {
-        'name': name,
-        'title': title,
-        'profile_handle': profile_handle,
-        'type': type,
-        'distance': distance,
-        'elevation_gain': elevation_gain,
-        'duration': duration,
-    }
+MONTHS_MAP = {
+    'January': 1,
+    'February': 2,
+    'March': 3,
+    'April': 4,
+    'May': 5,
+    'June': 6,
+    'July': 7,
+    'August': 8,
+    'September': 9,
+    'October': 10,
+    'November': 11,
+    'December': 12
+}
 
 
 def _get_time_start(feed_entry):
-    time_start = None
-    timestamp_field = feed_entry.find_element_by_class_name("timestamp")
-    if timestamp_field:
-        time_start_str = timestamp_field.get_attribute("datetime")
-        # "%Y-%m-%d %H:%M:%S" ||  # 2021-04-24 10:03:26 UTC
-        time_start_raw = datetime.strptime(str(time_start_str).replace("UTC", "+00:00"), '%Y-%m-%d %H:%M:%S %z')
-        time_start_raw.replace(tzinfo=pytz.utc)
-        time_start = time_start_raw.astimezone(tz=pytz.timezone("Europe/Berlin"))
+    try:
+        if feed_entry is None or len(str(feed_entry)) < 3:
+            logging.warning("could not parse datetime: ", feed_entry)
+            return None
 
-        # TODO improve this procedure:
-        time_start_berlin_str = str(time_start).split("+")[0]
-        time_start = datetime.strptime(time_start_berlin_str, '%Y-%m-%d %H:%M:%S')
+        [datestr, timestr] = str(feed_entry).split(sep=' at ')
+        if datestr is None or len(str(datestr)) < 3 \
+                or timestr is None or len(str(timestr)) < 2:
+            logging.warning("could not parse datetime: ", feed_entry)
+            return None
 
-    return time_start
+        if "Today" in datestr:
+            pdate = datetime.today()
+        elif "Yesterday" in datestr:
+            pdate = datetime.today() - timedelta(days=1)
+        else:
+            [daymonthstr, yearstr] = str(datestr).split(",")
+            if daymonthstr is None or len(str(daymonthstr)) < 3 \
+                    or yearstr is None or len(str(yearstr)) < 2:
+                logging.warning("could not parse datetime: ", feed_entry)
+
+            year = int(yearstr)
+            [monthstr, daystr] = str(daymonthstr).split(' ')
+            if monthstr is None or len(str(monthstr)) < 1 \
+                    or daystr is None or len(str(daystr)) < 1:
+                logging.warning("could not parse datetime: ", feed_entry)
+
+            month = MONTHS_MAP[str(monthstr).strip()]
+            day = int(daystr)
+            pdate = date(year, month, day)
 
 
-def fetch_all_strava_runs():
+
+        ptime = datetime.strptime(timestr, "%I:%M %p").time()
+        return pytz.timezone("Europe/Berlin").localize(datetime.combine(pdate, ptime, tzinfo=None))
+    except Exception as ex:
+        print("Parsing exception: ", feed_entry, "-", ex)
+        logging.warning("Parsing exception: ", feed_entry, "-", ex)
+        return None
+
+
+def fetch_activity_detail(activity_id, driver):
+    try:
+        driver.execute_script("window.open('');")
+        driver.switch_to.window(driver.window_handles[1])
+        driver.get(f"https://www.strava.com/activities/{activity_id}")
+        time.sleep(4.0)
+        # ----------------------------------------
+        # scrolling down
+
+        distance = 0
+        elevation_gain = 0
+        moving_time = timedelta(seconds=0)
+
+        print("start scrolling...")
+        elem = driver.find_element(By.CLASS_NAME, "inline-stats")
+        elements = str(elem.text).split('\n')
+        # order not guaranteed:
+        #   ['8.68km', 'Distance', '52:22', 'Moving Time', '6:02/km', 'Pace', '57', 'Relative Effort']
+        if len(elements) % 2 != 0:
+            logging.warning("failed to parse: " + str(elem.text).split('\n'))
+            return None
+
+        for i in range(0, int(len(elements) / 2)):
+            tag = elements[2*i+1]
+            val = elements[2*i]
+            if tag == 'Distance':  # in km
+                distance = float(re.sub(r"[,/a-zA-Z]+", "", str(val)))
+            elif tag == 'Elevation':  # in m
+                elevation_gain = float(re.sub(r"[,/a-zA-Z]+", '', str(val)))
+            elif tag == 'Moving Time':  # in (hh:)mm:ss
+                hms = str(val).split(':')
+                if len(hms) == 3:
+                    moving_time = timedelta(hours=float(hms[0]), minutes=float(hms[1]), seconds=float(hms[2]))
+
+                elif len(hms) == 2:
+                    moving_time = timedelta(minutes=float(hms[0]), seconds=float(hms[1]))
+
+                else:
+                    print("could not parse move time!", str(val))
+                    logging.warning("could not parse move time! " + str(val))
+                    return None
+
+
+        elem = driver.find_element(By.CLASS_NAME, "more-stats")
+        elements = str(elem.text).split('\n')
+        # order not guaranteed: ['Elevation', '208m', 'Calories', '754', 'Elapsed Time', '53:03']
+        if len(elements) % 2 != 0:
+            logging.warning("failed to parse: " + str(elem.text).split('\n'))
+            return None
+
+        for i in range(0, int(len(elements) / 2)):
+            """reversed compared to first list!!"""
+            tag = elements[2 * i]
+            val = elements[2 * i + 1]
+            if tag == 'Distance':  # in km
+                    distance = float(re.sub(r"[,/a-zA-Z]+", "", str(val)))
+            elif tag == 'Elevation':  # in m
+                    elevation_gain = float(re.sub(r"[,/a-zA-Z]+", '', str(val)))
+            elif tag == 'Moving Time':  # in (hh:)mm:ss
+                hms = str(val).split(':')
+                if len(hms) == 3:
+                    moving_time = timedelta(hours=int(hms[0]), minutes=int(hms[1]), seconds=int(hms[2]))
+
+                elif len(hms) == 2:
+                    moving_time = timedelta(minutes=int(hms[0]), seconds=int(hms[1]))
+
+                else:
+                    print("could not parse move time!", str(val))
+                    logging.warning("could not parse move time! " + str(val))
+                    return None
+        # ----------------------------------------
+        time.sleep(1.0)
+        driver.close()
+        driver.switch_to.window(driver.window_handles[0])
+        driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.CONTROL + 'w')
+    except Exception as ex:
+        print("fetch detail failed:", ex)
+        logging.warning(f"fetch detail failed:{ex}")
+
+    return distance, elevation_gain, moving_time
+
+
+def fetch_all_strava_runs(club_id: int):
     read_credential()
 
     if sys.platform == "linux" or sys.platform == "linux2":
@@ -191,22 +241,22 @@ def fetch_all_strava_runs():
     else:  # platform == "win32"
         driver = webdriver.Chrome()
 
-    driver.get("https://www.strava.com/clubs/895672/recent_activity") # old club: 849711
+    driver.get(f"https://www.strava.com/clubs/{club_id}/recent_activity")  # old club: 849711
     print(driver.title)
 
     # assert "Sonnen" in driver.title
 
     if "Log In" in driver.title:
         print('login needed...')
-        send_button = driver.find_element_by_id('login-button')
+        send_button = driver.find_element(By.ID, 'login-button')
 
         if not strava_email or not strava_password:
-            print("error: email or password emapty!")
+            print("error: email or password empty!")
             exit(0)
 
-        email_field = driver.find_element_by_id('email')
-        password_field = driver.find_element_by_id('password')
-        remember_me_checkbox = driver.find_element_by_id('remember_me')
+        email_field = driver.find_element(By.ID, 'email')
+        password_field = driver.find_element(By.ID, 'password')
+        remember_me_checkbox = driver.find_element(By.ID, 'remember_me')
 
         if not email_field or not password_field:
             print("error: email/password input field(s)!")
@@ -230,7 +280,7 @@ def fetch_all_strava_runs():
     # scrolling down
 
     print("start scrolling...")
-    elem = driver.find_element_by_tag_name("body")
+    elem = driver.find_element(By.TAG_NAME, "body")
     no_of_pagedowns = 50
 
     while no_of_pagedowns:
@@ -244,106 +294,76 @@ def fetch_all_strava_runs():
     run_list = []
 
     print("analyzing feed...")
-    feed = driver.find_element_by_class_name("feed-moby")
+    feed = driver.find_element(By.CLASS_NAME, "feed")
 
-    # [solo activities]++++++++++++++++++
-    feed_entries = feed.find_elements_by_class_name("activity")  # only solo runs
-
-    for feed_entry in feed_entries:
-        if not "group-activity" in feed_entry.get_attribute("class"):
-            activity_handle = None
-            route_link = None
-            time_start = _get_time_start(feed_entry)
-
-            activity_handle = 0
-            try:
-                activity_handle_str = str(feed_entry.get_attribute('id') or "0").replace("Activity-", "")
-                activity_handle = numpy.uint64(activity_handle_str)
-            except:
-                print("activity_handle could not be parsed!")
-
-            try:
-                route_img_element = feed_entry.find_element_by_class_name("entry-image")
-                if route_img_element:
-                    route_handle_str = str(route_img_element.get_attribute('href') or "0").replace(
-                        "https://www.strava.com/activities/", ""
-                    )
-                    route_handle = numpy.uint64(route_handle_str)
-            except:
-                x = True
-
-            data = _get_name_title_profile_handle_type_distance_elevation_duration(feed_entry)
-            name = data['name']
-            title = data['title']
-            profile_handle = data['profile_handle']
-            type = data['type']
-            distance = data['distance']
-            elevation_gain = data['elevation_gain']
-            duration = data['duration']
-
-            if activity_handle > 0 and name and title and time_start and (distance > 0) and duration:
-                run_list.append({
-                    'activity_handle': activity_handle,
-                    'name': name,
-                    'time_start': time_start,
-                    'profile_handle': profile_handle,
-                    'route_handle': route_handle,
-                    'title': title,
-                    'type': type,
-                    'distance': distance,
-                    'elevation_gain': elevation_gain,
-                    'duration': duration,
-                })
-            else:
-                print("One field was empty, so inserting StravaRun is not possible! Ignoring this run...")
-
-    # [group activities]++++++++++++++++++
-    feed_entries = driver.find_elements_by_class_name("group-activity")
+    feed_entries = feed.find_elements(By.CLASS_NAME, "react-feed-component")  # only solo runs
 
     for feed_entry in feed_entries:
-        activity_handle = None
-        route_handle = 0
-        time_start = _get_time_start(feed_entry)
+        try:
+            react_data = feed_entry.get_attribute('data-react-props')
+            json_data = json.loads(react_data)
 
-        entry_body = feed_entry.find_element_by_class_name("entry-body")
-        if entry_body:
-            try:
-                route_link_element = entry_body.find_element_by_tag_name('a')
-                if route_link_element:
-                    route_handle_str = str(route_link_element.get_attribute('href') or "0").replace(
-                        "https://www.strava.com/activities/", ""
-                    )
-                    route_handle = numpy.uint64(route_handle_str)
-            except:
-                x = True
+            # Activity / GroupActivity
+            react_activity_type = feed_entry.get_attribute('data-react-class')
+            react_data_type = json_data['entity']
 
-        list_entries = feed_entry.find_element_by_class_name("list-entries")
-        if list_entries:
-            entry_detail_list = list_entries.find_elements_by_class_name("entity-details")
-            for entry_detail in entry_detail_list:
-                activity_handle = 0
-                try:
-                    activity_handle_str = str(entry_detail.get_attribute('id') or "0").replace("Activity-", "")
-                    activity_handle = numpy.uint64(activity_handle_str)
-                except:
-                    print("activity_handle could not be parsed!")
+            # [solo activities]++++++++++++++++++
+            if react_activity_type == "Activity" or react_data_type == 'Activity':
+                json_activity = json_data['activity']
+                if json_activity is None:
+                    logging.error("activity parse failure: json.activity null; json: ", json_data)
+                    continue
 
-                data = _get_name_title_profile_handle_type_distance_elevation_duration(entry_detail)
-                name = data['name']
-                title = data['title']
-                profile_handle = data['profile_handle']
-                type = data['type']
-                distance = data['distance']
-                elevation_gain = data['elevation_gain']
-                duration = data['duration']
+                athlete_data = json_activity['athlete']
+                if athlete_data is None:
+                    logging.warning("athlete_data was null during parsing: jsonData: " + string(json_data))
+                    continue
 
-                if activity_handle > 0 and name and title and time_start and (distance > 0) and duration:
+                athlete_id = int(athlete_data['athleteId'])
+                athlete_name = athlete_data['athleteName']
+
+                activity_id = int(json_activity['id'])
+                activity_name = json_activity['activityName']
+
+                timeAndLocation = json_activity['timeAndLocation'] or {}
+                if timeAndLocation is None:
+                    logging.warning("timeAndLocation was null during parsing: jsonData: " + string(json_data))
+                    continue
+                displayDateAtTime = timeAndLocation['displayDateAtTime']
+                displayDate = timeAndLocation['displayDate']
+
+                move_type = json_activity['type']
+                # Run, Ride
+                if move_type == 'Run':
+                    move_type = Run.TYPE_RUN
+                elif move_type == 'Ride':
+                    move_type = Run.TYPE_BIKE
+                else:
+                    logging.warning("Couldn't identify move type: ", move_type)
+                    print("Couldn't identify move type: ", move_type)
+                    continue
+
+                route_link = None
+                if (json_activity['mapAndPhotos'] is not None
+                        and json_activity['mapAndPhotos']['activityMap'] is not None):
+                    route_link = json_activity['mapAndPhotos']['activityMap']['url']
+
+                time_start = _get_time_start(displayDateAtTime)
+
+                name = athlete_name
+                title = activity_name
+                profile_handle = athlete_id
+                type = move_type
+
+                (distance, elevation_gain, duration) = fetch_activity_detail(activity_id, driver)
+
+                if activity_id > 0 and name and title and time_start and (distance > 0) and duration:
                     run_list.append({
-                        'activity_handle': activity_handle,
+                        'activity_handle': activity_id,
                         'name': name,
                         'time_start': time_start,
                         'profile_handle': profile_handle,
-                        'route_handle': route_handle,
+                        'route_link': route_link,
                         'title': title,
                         'type': type,
                         'distance': distance,
@@ -353,60 +373,132 @@ def fetch_all_strava_runs():
                 else:
                     print("One field was empty, so inserting StravaRun is not possible! Ignoring this run...")
 
-    # ++++++++++++++++++
+            # [group activities]++++++++++++++++++
+            elif react_activity_type == "GroupActivity" or react_data_type == 'GroupActivity':
+                json_raw_data = json_data['rowData']
+
+                if json_raw_data is None:
+                    continue
+
+                for json_activity in json_raw_data['activities']:
+                    athlete_id = int(json_activity['athlete_id'])
+                    athlete_name = json_activity['athlete_name']
+
+                    activity_id = int(json_activity['activity_id'])
+                    activity_name = json_activity['name']
+
+                    start_datetime = json_activity['start_date']
+                    if start_datetime is None:
+                        print("start_date was none: ", json_activity)
+                        logging.warning("start_date was none: ", json_activity)
+                        continue
+                    time_start = pytz.utc.localize(datetime.strptime(start_datetime, '%Y-%m-%dT%H:%M:%SZ'))
+
+                    move_type = json_activity['type']
+                    # Run, Ride
+                    if move_type == 'Run':
+                        move_type = Run.TYPE_RUN
+                    elif move_type == 'Ride':
+                        move_type = Run.TYPE_BIKE
+                    else:
+                        logging.warning("Couldn't identify move type: ", move_type)
+                        print("Couldn't identify move type: ", move_type)
+                        continue
+
+                    route_link = None
+                    if json_activity['activity_map'] is not None:
+                        route_link = json_activity['activity_map']['url']
+
+                    name = athlete_name
+                    title = activity_name
+                    profile_handle = athlete_id
+                    type = move_type
+
+                    (distance, elevation_gain, duration) = fetch_activity_detail(activity_id, driver)
+
+                    if activity_id > 0 and name and title and time_start and (distance > 0) and duration:
+                        run_list.append({
+                            'activity_handle': activity_id,
+                            'name': name,
+                            'time_start': time_start,
+                            'profile_handle': profile_handle,
+                            'route_link': route_link,
+                            'title': title,
+                            'type': type,
+                            'distance': distance,
+                            'elevation_gain': elevation_gain,
+                            'duration': duration,
+                        })
+                    else:
+                        print("One field was empty, so inserting StravaRun is not possible! Ignoring this run...")
+
+            # ++++++++++++++++++
+            else:
+                print(f'Unimplemented activity type: [{react_activity_type}] -> data: {react_data}')
+                logging.error(f'Unimplemented activity type: [{react_activity_type}] -> data: {react_data}')
+        except Exception as ex:
+            print("parse error: " + str(ex))
+            logging.warning("parse error: " + str(ex))
 
     driver.close()
     return run_list
 
 
+def read_club_list():
+    with open('../../../.config/.crawl-clublist', 'r') as clublistfile:
+        return list(map(lambda x: int(str(x).strip()), clublistfile.readlines()))
+
+
 def fetch_insert_strava_runs():
     all_query = StravaRun.objects
 
-    for run in fetch_all_strava_runs():
-        filtered = all_query.filter(strava_handle=run['activity_handle'])
-        if filtered.exists():
-            obj = StravaRun.objects.get(strava_handle=run['activity_handle'])
+    for club_id in read_club_list():
+        for run in fetch_all_strava_runs(club_id):
+            filtered = all_query.filter(strava_handle=run['activity_handle'])
+            if filtered.exists():
+                obj = StravaRun.objects.get(strava_handle=run['activity_handle'])
 
-            if obj:
-                obj.creator = run['name'],
+                if obj:
+                    obj.creator = run['name'],
 
-                # obj.strava_handle = run['activity_handle'].real,
-                # obj.profile_handle = run['profile_handle'].real,
-                # obj.route_handle = run['route_handle'].real,
+                    # obj.strava_handle = run['activity_handle'].real,
+                    # obj.profile_handle = run['profile_handle'].real,
+                    # obj.route_handle = run['route_handle'].real,
 
-                obj.distance = run['distance'],
-                obj.elevation_gain = run['elevation_gain'],
+                    obj.distance = run['distance'],
+                    obj.elevation_gain = run['elevation_gain'],
 
-                obj.time_start = run['time_start'],
-                obj.duration = run['duration'],
-                obj.type = run['type'],
-                obj.note = run['title'],
+                    obj.time_start = run['time_start'],
+                    obj.duration = run['duration'],
+                    obj.type = run['type'],
+                    obj.note = run['title'],
 
-                try:
-                    obj.save()
-                except:
-                    x = True
+                    try:
+                        obj.save()
+                    except:
+                        x = True
 
-                print("Updated StravaRun:", run['name'], ":", run['title'])
+                    print("Updated StravaRun:", run['name'], ":", run['title'])
+                else:
+                    print("Error, object not found...")
             else:
-                print("Error, object not found...")
-        else:
-            StravaRun(
-                creator=run['name'],
+                StravaRun(
+                    creator=run['name'],
 
-                strava_handle=run['activity_handle'],
-                profile_handle=run['profile_handle'],
-                route_handle=run['route_handle'],
+                    strava_group_handle=club_id,
+                    strava_handle=run['activity_handle'],
+                    profile_handle=run['profile_handle'],
+                    route_link=run['route_link'],
 
-                distance=run['distance'],
-                elevation_gain=run['elevation_gain'],
+                    distance=run['distance'],
+                    elevation_gain=run['elevation_gain'],
 
-                time_start=run['time_start'],
-                duration=run['duration'],
-                type=run['type'],
-                note=run['title'],
-            ).save()
-            print("Inserted StravaRun:", run['name'], ":", run['title'])
+                    time_start=run['time_start'],
+                    duration=run['duration'],
+                    type=run['type'],
+                    note=run['title'],
+                ).save()
+                print("Inserted StravaRun:", run['name'], ":", run['title'])
 
     print("Updating Strava stats...")
     score_updater.score_update_strava()

@@ -1,4 +1,3 @@
-
 import os
 from pathlib import Path
 
@@ -10,12 +9,14 @@ load_dotenv(DOT_ENV_STRING)
 
 from django.core.exceptions import ImproperlyConfigured
 
+
 def get_env_value(env_variable):
     try:
-      	return os.environ.get(env_variable)
+        return os.environ.get(env_variable)
     except KeyError:
         error_msg = 'Set the {} environment variable'.format(var_name)
         raise ImproperlyConfigured(error_msg)
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,7 +38,6 @@ ALLOWED_HOSTS = [
     "192.168.178.70",
     "192.168.178.31",
     "djk-sonnen.de"]
-
 
 # Application definition
 
@@ -66,7 +66,6 @@ INSTALLED_APPS = [
     'group.apps.GroupConfig',
 
 ]
-
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -113,29 +112,29 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'sonnen_rennt.wsgi.application'
 
-DB_HOST= get_env_value('DATABASE_HOST')
-DB_NAME= get_env_value('DATABASE_NAME')
-DB_PORT= str(get_env_value('DATABASE_PORT'))
-DB_USER= get_env_value('DATABASE_USER')
-DB_PASSWORD= get_env_value('DATABASE_PASSWORD')
+DB_HOST = get_env_value('DATABASE_HOST')
+DB_NAME = get_env_value('DATABASE_NAME')
+DB_PORT = str(get_env_value('DATABASE_PORT'))
+DB_USER = get_env_value('DATABASE_USER')
+DB_PASSWORD = get_env_value('DATABASE_PASSWORD')
 
 DATABASES = {
     'default': {
         # 'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': BASE_DIR / 'db.sqlite3',
-        'ENGINE': 'django.db.backends.mysql',
+        ## 'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': DB_NAME,
         'USER': DB_USER,
         'PASSWORD': DB_PASSWORD,
         'HOST': DB_HOST,
-        'PORT': '3307',
-        'OPTIONS': {'charset': 'utf8mb4'},
+        'PORT': '6644',
+        # mysql: 'OPTIONS': {'charset': 'utf8mb4'},
         # 'OPTIONS': {
         #     'read_default_file': '/sql_db.cnf',
         # },
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -155,19 +154,17 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
 LANGUAGE_CODE = 'de-de'
 
-TIME_ZONE = 'UTC'
+USE_TZ = True
+TIME_ZONE = 'Europe/Berlin'
 
 USE_I18N = True
 
 USE_L10N = True
-
-USE_TZ = True
 
 
 if not PRODUCTION_STATIC_DIRS:
@@ -184,14 +181,12 @@ else:  # PRODUCTION
     STATIC_ROOT = os.path.join(BASE_DIR, 'templates')
     print("STATIC_ROOT: ", STATIC_ROOT)
 
-
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = '/user/login/'
-
 
 # SMTP Configuration
 

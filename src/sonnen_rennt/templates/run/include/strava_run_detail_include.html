@@ -33,10 +33,12 @@
         <p class="card-text"><b>Notiz: </b>{{ run.note }}</p>
     {% endif %}
 
-    {% if run.route_handle %}
+    {% if run.route_link %}
         <p class="card-text"><b>Routen Details: </b>
-            <a href="https://www.strava.com/activities/{{ run.route_handle }}"
-                   style="font-weight: bold;">weiter zu Strava</a>
+            <a href="{{ run.route_link }}"
+                   style="font-weight: bold;">Karte ansehen</a><br>
+            <a href="https://www.strava.com/activities/{{ run.strava_handle }}"
+                   style="font-weight: bold;">direkt bei Strava ansehen</a>
         </p>
     {% endif %}
 

@@ -84,9 +84,10 @@ class StravaRun(models.Model):
 
     creator = models.CharField('creator', default="unbekannt", blank=True, null=False, max_length=300)
 
+    strava_group_handle = models.IntegerField('strava_group_handle', blank=False, null=False)
     strava_handle = models.PositiveBigIntegerField('strava_handle', unique=True, blank=None, null=False)
     profile_handle = models.PositiveBigIntegerField('profile_handle', blank=True, null=True)
-    route_handle = models.PositiveBigIntegerField('route_handle', blank=True, null=True)
+    route_link = models.TextField('route_link', blank=True, null=True)
 
     distance = models.FloatField('distance', null=False)    # in kilometers
     elevation_gain = models.FloatField('elevation_gain', default=0, null=False, blank=True)   # in meters

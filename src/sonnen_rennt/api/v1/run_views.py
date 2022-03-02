@@ -1,5 +1,6 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
+import pytz
 from django.http import HttpResponse, JsonResponse
 
 from rest_framework.authentication import TokenAuthentication
@@ -278,15 +279,16 @@ def run_create(request, *args, **kwargs):
     # clean_time_start ===============================
 
     if read_time_start is None:
-        time_start = datetime.now().strftime("%Y-%m-%d %H:%M")
-
+        time_start = datetime.now(tz=pytz.timezone("Europe/Berlin"))  # berlin tz
     else:
         read_time_start = datetime.fromisoformat(read_time_start)
-        today = datetime.now().replace(tzinfo=None)
-        one_week = timedelta(weeks=1)
-        time_start = read_time_start.replace(tzinfo=None)
+        read_time = pytz.timezone("Europe/Berlin").localize(time_start.replace(tzinfo=None))  # berlin tz
 
-        delta = today - read_time_start
+        today = datetime.now(tz=timezone.utc)
+        one_week = timedelta(weeks=1)
+        read_time_utc = pytz.utc.normalize(read_time)  # utc time
+
+        delta = today - read_time_utc
 
         if delta > one_week:
             response_object.update({
@@ -294,6 +296,9 @@ def run_create(request, *args, **kwargs):
                 'detail': "Run's start time mustn't lie back more than 7 days!"
             })
             return JsonResponse(response_object, status=400)
+
+        else:
+            time_start = read_time_utc
 
         # if read_time > today:
         #     response_object.update({
@@ -371,6 +376,7 @@ def run_create(request, *args, **kwargs):
     return JsonResponse(response_object, status=201)
 
 
+# expects utc isoformat times
 @api_view(['PUT'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -534,9 +540,9 @@ def run_edit(request, run_id, *args, **kwargs):
 
     else:
         read_time_start = datetime.fromisoformat(read_time_start)
-        today = datetime.now().replace(tzinfo=None)
+        today = pytz.utc.localize(datetime.now().replace(tzinfo=None))
         one_week = timedelta(weeks=1)
-        time_start = read_time_start.replace(tzinfo=None)
+        time_start = pytz.utc.localize(read_time_start.replace(tzinfo=None))
 
         delta = today - read_time_start
 

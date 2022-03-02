@@ -39,7 +39,7 @@ class StravaRunListView(View):
     template_name = 'run/strava_run_list.html'
 
     def get(self, request, *args, **kwargs):
-        queryset = StravaRun.objects.all()
+        queryset = StravaRun.objects.all().order_by('-time_start')
         paginator = Paginator(queryset, 10)
         page = request.GET.get('page')
 

@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta, timezone
+from os import read
 
+import pytz
 from django import forms
 from django.core.exceptions import ValidationError
 
@@ -130,22 +132,18 @@ class RunCreateEditForm(forms.ModelForm):
 
     def clean_time_start(self):
         read_time = self.cleaned_data.get("time_start")
-        print("read_time:", read_time)
-        print("read_time:", read_time)
+
         if read_time is None:
-            dtt_now = datetime.now().strftime("%Y-%m-%d %H:%M")
-            # dtt_now = datetime.now(tz=pytz.utc)
+            dtt_now = datetime.now(tz=pytz.timezone("Europe/Berlin"))  # berlin tz
             return dtt_now
+        else:
+            read_time = pytz.timezone("Europe/Berlin").localize(read_time.replace(tzinfo=None))  # berlin tz
 
-        # print("clean_time_start")
-        # print("read_time:", read_time)
-        # print("read_time type:", type(read_time))
-
-        today = datetime.now()
+        today = datetime.now(tz=timezone.utc)
         one_week = timedelta(weeks=1)
-        read_time = read_time.replace(tzinfo=None)
+        read_time_utc = pytz.utc.normalize(read_time)  # utc time
 
-        delta = today - read_time
+        delta = today - read_time_utc
 
         if delta > one_week:
             raise ValidationError("Startzeit darf nicht länger als 7 Tage zurückliegen!")
@@ -153,7 +151,7 @@ class RunCreateEditForm(forms.ModelForm):
         # if read_time > today:
         #     raise ValidationError("Startzeit darf nicht in der Zukunft liegen!")
 
-        return read_time
+        return read_time_utc
 
     def clean_distance(self):
         read_distance = self.cleaned_data.get("distance")
@@ -321,19 +319,18 @@ class RunEditForm(forms.ModelForm):
 
     def clean_time_start(self):
         read_time = self.cleaned_data.get("time_start")
+
         if read_time is None:
-            dtt_now = datetime.now().strftime("%Y-%m-%d %H:%M")
+            dtt_now = datetime.now(tz=pytz.timezone("Europe/Berlin"))  # berlin tz
             return dtt_now
+        else:
+            read_time = pytz.timezone("Europe/Berlin").localize(read_time.replace(tzinfo=None))  # berlin tz
 
-        # print("clean_time_start")
-        # print("read_time:", read_time)
-        # print("read_time type:", type(read_time))
-
-        today = datetime.now()
+        today = datetime.now(tz=timezone.utc)
         one_week = timedelta(weeks=1)
-        read_time = read_time.replace(tzinfo=None)
+        read_time_utc = pytz.utc.normalize(read_time)  # utc time
 
-        delta = today - read_time
+        delta = today - read_time_utc
 
         if delta > one_week:
             raise ValidationError("Startzeit darf nicht länger als 7 Tage zurückliegen!")
@@ -341,7 +338,7 @@ class RunEditForm(forms.ModelForm):
         # if read_time > today:
         #     raise ValidationError("Startzeit darf nicht in der Zukunft liegen!")
 
-        return read_time
+        return read_time_utc
 
     def clean_distance(self):
         read_distance = self.cleaned_data.get("distance")

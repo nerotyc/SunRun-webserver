@@ -5,9 +5,9 @@ from django.db.models import Sum
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
-from group.score_updater import score_of, read_strava_data
+from dashboard.models import DashboardNotification, NotificationChoice
+from group.score_updater import score_of
 from run.models import Run, StravaRun
-
 
 goal_community_month = 15000
 
@@ -164,6 +164,7 @@ def default_view(request, *args, **kargs):
     ##################################################################################
 
     community_month_score_sum = (month_distance_score + strava_month_distance_score)
+    monthly_percentage = str(int((community_month_score_sum * 100.0 / goal_community_month)))
 
     context = {
         'community_stats_day': StatsRow(
@@ -176,8 +177,9 @@ def default_view(request, *args, **kargs):
             (day_distance_score + strava_day_distance_score),
         ),
         'stats_community_month_progressbar_text':
-            str(int((community_month_score_sum * 100.0 / goal_community_month))) + " %" +
+            monthly_percentage + " %" +
             " (" + str(int(community_month_score_sum)) + "/" + str(int(goal_community_month)) + " km)",
+        'stats_community_month_progressbar_percent': monthly_percentage,
         'community_stats_month': StatsRow(
             '% 6.0f' % (month_distance_walk + strava_month_distance_walk) + ' km',
             '% 6.0f' % (month_distance_run + strava_month_distance_run) + ' km',
@@ -272,30 +274,20 @@ def default_view(request, *args, **kargs):
             ),
         })
 
-    # messages.warning(request, 'Dieses App ist eine Alpha Version. Wir bitten um Nachsicht bei ggf. auftretenden Fehlern. '
-    #                           'Bitte wenden Sie sich an uns, falls Sie auf Schreib-, Logik-, Funktionsfehler stoßen.')
-    # messages.warning(request, 'Bitte beachten Sie: Die App ist für Desktopgeräte optimiert. Bei der Benutzung auf mobilen Endgeräten '
-    #                           'können daher unvorhergesehene Fehler auftreten!')
-    #
-    # messages.info(request, "Alle Daten, die vor dem 1.4.2021 erzeugt werden, werden zum 1.4 gelöscht.")
-
-    # messages.warning(request, 'Dieses App ist eine Alpha Version. Wir bitten um Nachsicht bei ggf. auftretenden Fehlern. '
-    #                           'Bitte wenden Sie sich an uns, falls Sie auf Schreib-, Logik-, Funktionsfehler sto   ^=en.')
-    # messages.warning(request, 'Bitte beachten Sie: Die App ist f      r Desktopger      te optimiert. Bei der Benutzung auf mobilen Endger      ten '
-    #                          'k      nnen daher unvorhergesehene Fehler auftreten!')
-
-    # messages.success(request, "SunRun hat begonnen! Sie k      nnen jetzt Daten einf      gen! Viel Spa   ^=!")
-
-    # messages.success(request,
-    #                  "Witterungsbedingt wird das offizielle SunRun Event bis Mitte Mai verlängert. Die Website samt ihrer Daten bleibt aber danach zur freien Verwendung online!")
-    # messages.warning(request,
-    #                  "Zukünftig werden die Strava Club-Daten automatisiert importiert! Bitte stellen Sie sicher, dass "
-    #                  "Sie Daten nur auf einer Plattform erfassen!")
-    #
-    # messages.success(request, "Jetzt können Emojis verwendet werden 😍👍👌")
-
-    messages.success(request, "Das offiziele SunRun Event ist beendet. Wir führen jetzt die Daten zusammen.")
-    messages.info(request, "Die Ergebnisse werden in den kommenden Tagen auf unserer Hauptseite (djk-sonnen.de) veröffentlicht.")
+    notification_query = DashboardNotification.objects.filter(active=True, publish_by__lte=datetime.now()).order_by('pos_from_top')
+    for noti in notification_query:
+        print("--> ", noti.msg)
+        if noti.close_by is None or noti.close_by > datetime.utcnow():
+            if noti.type == NotificationChoice.INFO:
+                messages.info(request, noti.msg)
+            elif noti.type == NotificationChoice.WARNING:
+                messages.warning(request, noti.msg)
+            elif noti.type == NotificationChoice.ERROR:
+                messages.error(request, noti.msg)
+            elif noti.type == NotificationChoice.SUCCESS:
+                messages.success(request, noti.msg)
+            else:
+                messages.info(request, noti.msg)
 
     return render(request, "dashboard/default/dashboard.html", context)
 
@@ -553,6 +545,7 @@ def community_view(request, *args, **kargs):
     ##################################################################################
 
     community_month_score_sum = (month_distance_score + strava_month_distance_score)
+    monthly_percentage = str(int((community_month_score_sum * 100.0 / goal_community_month)))
 
     context = {
         'community_stats_day': StatsRow(
@@ -574,8 +567,9 @@ def community_view(request, *args, **kargs):
             (week_distance_score + strava_week_distance_score),
         ),
         'stats_community_month_progressbar_text':
-            str(int((community_month_score_sum * 100.0 / goal_community_month))) + " %" +
+            monthly_percentage + " %" +
             " (" + str(int(community_month_score_sum)) + "/" + str(int(goal_community_month)) + " km)",
+        'stats_community_month_progressbar_percent': monthly_percentage,
         'community_stats_month': StatsRow(
             '% 6.0f' % (month_distance_walk + strava_month_distance_walk) + ' km',
             '% 6.0f' % (month_distance_run + strava_month_distance_run) + ' km',
