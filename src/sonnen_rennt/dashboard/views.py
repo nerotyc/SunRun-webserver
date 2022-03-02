@@ -276,15 +276,15 @@ def default_view(request, *args, **kargs):
 
     notification_query = DashboardNotification.objects.filter(active=True, publish_by__lte=datetime.now()).order_by('pos_from_top')
     for noti in notification_query:
-        print("--> ", noti.msg)
         if noti.close_by is None or noti.close_by > datetime.utcnow():
-            if noti.type == NotificationChoice.INFO:
+            print("notitype: ", noti.type)
+            if noti.type == 0:
                 messages.info(request, noti.msg)
-            elif noti.type == NotificationChoice.WARNING:
+            elif noti.type == 1:
                 messages.warning(request, noti.msg)
-            elif noti.type == NotificationChoice.ERROR:
+            elif noti.type == 2:
                 messages.error(request, noti.msg)
-            elif noti.type == NotificationChoice.SUCCESS:
+            elif noti.type == 3:
                 messages.success(request, noti.msg)
             else:
                 messages.info(request, noti.msg)
