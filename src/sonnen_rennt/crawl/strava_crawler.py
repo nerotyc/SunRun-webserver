@@ -104,13 +104,13 @@ MONTHS_MAP = {
 def _get_time_start(feed_entry):
     try:
         if feed_entry is None or len(str(feed_entry)) < 3:
-            logging.warning("could not parse datetime: ", feed_entry)
+            logging.warning(f"could not parse datetime: {str(feed_entry)}")
             return None
 
         [datestr, timestr] = str(feed_entry).split(sep=' at ')
         if datestr is None or len(str(datestr)) < 3 \
                 or timestr is None or len(str(timestr)) < 2:
-            logging.warning("could not parse datetime: ", feed_entry)
+            logging.warning(f"could not parse datetime: {str(feed_entry)}")
             return None
 
         if "Today" in datestr:
@@ -121,25 +121,23 @@ def _get_time_start(feed_entry):
             [daymonthstr, yearstr] = str(datestr).split(",")
             if daymonthstr is None or len(str(daymonthstr)) < 3 \
                     or yearstr is None or len(str(yearstr)) < 2:
-                logging.warning("could not parse datetime: ", feed_entry)
+                logging.warning(f"could not parse datetime: {str(feed_entry)}")
 
             year = int(yearstr)
             [monthstr, daystr] = str(daymonthstr).split(' ')
             if monthstr is None or len(str(monthstr)) < 1 \
                     or daystr is None or len(str(daystr)) < 1:
-                logging.warning("could not parse datetime: ", feed_entry)
+                logging.warning(f"could not parse datetime: {str(feed_entry)}")
 
             month = MONTHS_MAP[str(monthstr).strip()]
             day = int(daystr)
             pdate = date(year, month, day)
 
-
-
         ptime = datetime.strptime(timestr, "%I:%M %p").time()
         return pytz.timezone("Europe/Berlin").localize(datetime.combine(pdate, ptime, tzinfo=None))
     except Exception as ex:
         print("Parsing exception: ", feed_entry, "-", ex)
-        logging.warning("Parsing exception: ", feed_entry, "-", ex)
+        logging.warning(f"Parsing exception: {str(feed_entry)}-{str(ex)}")
         return None
 
 
@@ -162,7 +160,8 @@ def fetch_activity_detail(activity_id, driver):
         # order not guaranteed:
         #   ['8.68km', 'Distance', '52:22', 'Moving Time', '6:02/km', 'Pace', '57', 'Relative Effort']
         if len(elements) % 2 != 0:
-            logging.warning("failed to parse: " + str(elem.text).split('\n'))
+            err_str = str(elem.text).split('\n')
+            logging.warning(f"failed to parse: {str(err_str)}")
             return None
 
         for i in range(0, int(len(elements) / 2)):
@@ -182,7 +181,7 @@ def fetch_activity_detail(activity_id, driver):
 
                 else:
                     print("could not parse move time!", str(val))
-                    logging.warning("could not parse move time! " + str(val))
+                    logging.warning(f"could not parse move time! {str(val)}")
                     return None
 
 
@@ -190,7 +189,8 @@ def fetch_activity_detail(activity_id, driver):
         elements = str(elem.text).split('\n')
         # order not guaranteed: ['Elevation', '208m', 'Calories', '754', 'Elapsed Time', '53:03']
         if len(elements) % 2 != 0:
-            logging.warning("failed to parse: " + str(elem.text).split('\n'))
+            err_str = str(elem.text).split('\n')
+            logging.warning(f"failed to parse: {err_str}")
             return None
 
         for i in range(0, int(len(elements) / 2)):
@@ -211,7 +211,7 @@ def fetch_activity_detail(activity_id, driver):
 
                 else:
                     print("could not parse move time!", str(val))
-                    logging.warning("could not parse move time! " + str(val))
+                    logging.warning(f"could not parse move time! {str(val)}")
                     return None
         # ----------------------------------------
         time.sleep(1.0)
@@ -220,7 +220,7 @@ def fetch_activity_detail(activity_id, driver):
         driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.CONTROL + 'w')
     except Exception as ex:
         print("fetch detail failed:", ex)
-        logging.warning(f"fetch detail failed:{ex}")
+        logging.warning(f"fetch detail failed: {str(ex)}")
 
     return distance, elevation_gain, moving_time
 
@@ -311,12 +311,12 @@ def fetch_all_strava_runs(club_id: int):
             if react_activity_type == "Activity" or react_data_type == 'Activity':
                 json_activity = json_data['activity']
                 if json_activity is None:
-                    logging.error("activity parse failure: json.activity null; json: ", json_data)
+                    logging.error(f"activity parse failure: json.activity null; json: {str(json_data)}")
                     continue
 
                 athlete_data = json_activity['athlete']
                 if athlete_data is None:
-                    logging.warning("athlete_data was null during parsing: jsonData: " + string(json_data))
+                    logging.warning(f"athlete_data was null during parsing: jsonData: {str(json_data)}")
                     continue
 
                 athlete_id = int(athlete_data['athleteId'])
@@ -327,19 +327,23 @@ def fetch_all_strava_runs(club_id: int):
 
                 timeAndLocation = json_activity['timeAndLocation'] or {}
                 if timeAndLocation is None:
-                    logging.warning("timeAndLocation was null during parsing: jsonData: " + string(json_data))
+                    logging.warning(f"timeAndLocation was null during parsing: jsonData: {str(json_data)}")
                     continue
                 displayDateAtTime = timeAndLocation['displayDateAtTime']
                 displayDate = timeAndLocation['displayDate']
 
                 move_type = json_activity['type']
-                # Run, Ride
-                if move_type == 'Run':
+                # https://support.strava.com/hc/en-us/articles/216919407-Supported-Activity-Types-on-Strava
+                if move_type == 'Walk' or move_type == 'Hike':
+                    move_type = Run.TYPE_WALK
+                elif move_type == 'Run' or move_type == 'Virtual Run':
                     move_type = Run.TYPE_RUN
-                elif move_type == 'Ride':
+                elif move_type == 'Ride' or move_type == 'VirtualRide' or move_type == 'Handcycle':
                     move_type = Run.TYPE_BIKE
+                elif move_type == 'EBikeRide':
+                    move_type = Run.TYPE_EBIKE
                 else:
-                    logging.warning("Couldn't identify move type: ", move_type)
+                    logging.warning(f"Couldn't identify move type: {str(move_type)}")
                     print("Couldn't identify move type: ", move_type)
                     continue
 
@@ -390,7 +394,7 @@ def fetch_all_strava_runs(club_id: int):
                     start_datetime = json_activity['start_date']
                     if start_datetime is None:
                         print("start_date was none: ", json_activity)
-                        logging.warning("start_date was none: ", json_activity)
+                        logging.warning(f"start_date was none: {str(json_activity)}")
                         continue
                     time_start = pytz.utc.localize(datetime.strptime(start_datetime, '%Y-%m-%dT%H:%M:%SZ'))
 
@@ -401,7 +405,7 @@ def fetch_all_strava_runs(club_id: int):
                     elif move_type == 'Ride':
                         move_type = Run.TYPE_BIKE
                     else:
-                        logging.warning("Couldn't identify move type: ", move_type)
+                        logging.warning(f"Couldn't identify move type: {str(move_type)}")
                         print("Couldn't identify move type: ", move_type)
                         continue
 
@@ -435,7 +439,7 @@ def fetch_all_strava_runs(club_id: int):
             # ++++++++++++++++++
             else:
                 print(f'Unimplemented activity type: [{react_activity_type}] -> data: {react_data}')
-                logging.error(f'Unimplemented activity type: [{react_activity_type}] -> data: {react_data}')
+                logging.error(f'Unimplemented activity type: [{str(react_activity_type)}] -> data: {str(react_data)}')
         except Exception as ex:
             print("parse error: " + str(ex))
             logging.warning("parse error: " + str(ex))
