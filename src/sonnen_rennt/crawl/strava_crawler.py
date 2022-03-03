@@ -410,8 +410,12 @@ def fetch_all_strava_runs(club_id: int):
                         continue
 
                     route_link = None
-                    if json_activity['activity_map'] is not None:
-                        route_link = json_activity['activity_map']['url']
+                    try:
+                        if json_activity['activity_map'] is not None:
+                            route_link = json_activity['activity_map']['url']
+                    except Exception as ex:
+                        logging.info("no activity_map found, leaving empty")
+                        pass
 
                     name = athlete_name
                     title = activity_name
