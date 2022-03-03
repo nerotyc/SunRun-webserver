@@ -348,8 +348,6 @@ def fetch_all_strava_runs(club_id: int):
                     continue
 
                 route_link = None
-
-                route_link = None
                 try:
                     if (json_activity['mapAndPhotos'] is not None
                             and json_activity['mapAndPhotos']['activityMap'] is not None):
