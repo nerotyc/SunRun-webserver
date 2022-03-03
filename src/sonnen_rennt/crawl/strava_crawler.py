@@ -348,9 +348,15 @@ def fetch_all_strava_runs(club_id: int):
                     continue
 
                 route_link = None
-                if (json_activity['mapAndPhotos'] is not None
-                        and json_activity['mapAndPhotos']['activityMap'] is not None):
-                    route_link = json_activity['mapAndPhotos']['activityMap']['url']
+
+                route_link = None
+                try:
+                    if (json_activity['mapAndPhotos'] is not None
+                            and json_activity['mapAndPhotos']['activityMap'] is not None):
+                        route_link = json_activity['mapAndPhotos']['activityMap']['url']
+                except Exception as ex:
+                    logging.info("no activityMap found, leaving empty")
+                    pass
 
                 time_start = _get_time_start(displayDateAtTime)
 
