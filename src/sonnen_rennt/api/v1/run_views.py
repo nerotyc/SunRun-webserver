@@ -282,7 +282,7 @@ def run_create(request, *args, **kwargs):
         time_start = datetime.now(tz=pytz.timezone("Europe/Berlin"))  # berlin tz
     else:
         read_time_start = datetime.fromisoformat(read_time_start)
-        read_time = pytz.timezone("Europe/Berlin").localize(time_start.replace(tzinfo=None))  # berlin tz
+        read_time = pytz.timezone("Europe/Berlin").localize(read_time_start.replace(tzinfo=None))  # berlin tz
 
         today = datetime.now(tz=timezone.utc)
         one_week = timedelta(weeks=1)
