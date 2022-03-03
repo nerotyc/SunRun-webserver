@@ -27,7 +27,6 @@ SECRET_KEY = get_env_value('SECRET_KEY')
 DEBUG = (get_env_value('DEBUG') == 'True')
 
 DB_LOCAL = True  # whether to use home mysql etc. or production
-PRODUCTION_STATIC_DIRS = False
 
 SECURE_SSL_REDIRECT = False
 
@@ -196,20 +195,19 @@ USE_I18N = True
 USE_L10N = True
 
 
-if not PRODUCTION_STATIC_DIRS:
+if DEBUG:
     # Add these new lines
     STATICFILES_DIRS = (
         #     os.path.join(BASE_DIR, 'static/'),
         os.path.join(BASE_DIR, 'templates'),
     )
-    STATIC_URL = '/static/'
     # STATIC_ROOT = os.path.join(BASE_DIR, 'templates/')
 
 else:  # PRODUCTION
-    STATIC_URL = '/static/'
     STATIC_ROOT = os.path.join(BASE_DIR, 'templates')
     print("STATIC_ROOT: ", STATIC_ROOT)
 
+STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
