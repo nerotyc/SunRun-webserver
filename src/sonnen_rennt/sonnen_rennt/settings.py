@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = get_env_value('SECRET_KEY')
 
-DEBUG = get_env_value('DEBUG')
+DEBUG = (get_env_value('DEBUG') == 'True')
 
 DB_LOCAL = True  # whether to use home mysql etc. or production
 PRODUCTION_STATIC_DIRS = False
@@ -37,7 +37,36 @@ ALLOWED_HOSTS = [
     "localhost",
     "192.168.178.70",
     "192.168.178.31",
-    "djk-sonnen.de"]
+    "djk-sonnen.de"
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://localhost:8000',
+    'https://localhost:8080',
+    "https://run.djk-sonnen.de",
+    "https://127.0.0.1",
+    "https://192.168.178.70",
+    "https://192.168.178.31",
+    "https://djk-sonnen.de",
+   'http://localhost:8000',
+   'http://localhost:8080',
+   "http://run.djk-sonnen.de",
+   "http://127.0.0.1",
+   "http://192.168.178.70",
+   "http://192.168.178.31",
+   "http://djk-sonnen.de"
+]
+
+CORS_ORIGIN_WHITELIST = [
+    'localhost:8000',
+    'localhost:8080',
+    "run.djk-sonnen.de",
+    "127.0.0.1",
+    "localhost",
+    "192.168.178.70",
+    "192.168.178.31",
+    "djk-sonnen.de"
+]
 
 # Application definition
 
