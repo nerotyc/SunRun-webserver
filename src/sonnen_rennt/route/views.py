@@ -205,7 +205,7 @@ class RouteListView(View):
     template_name = "route/route_list.html"
 
     def get(self, request, *args, **kwargs):
-        queryset = Route.objects.all()
+        queryset = Route.objects.all().order_by("-created")
         paginator = Paginator(queryset, 10)
         page = request.GET.get('page')
 
@@ -225,7 +225,7 @@ class RouteListUserView(View):
     template_name = 'route/route_list.html'
 
     def get(self, request, *args, **kwargs):
-        queryset = Route.objects.filter(creator=request.user.profile.id)
+        queryset = Route.objects.filter(creator=request.user.profile.id).order_by("-created")
         paginator = Paginator(queryset, 10)
         page = request.GET.get('page')
 

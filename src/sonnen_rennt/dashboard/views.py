@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from django.contrib import messages
 from django.db.models import Sum
@@ -34,11 +34,11 @@ class StatsRow:
 
 
 def default_view(request, *args, **kargs):
-    today = datetime.today()
+    today = datetime.today().replace(tzinfo=timezone.utc)
 
     # DAY ##################################
     day_filtered = Run.objects.filter(
-        time_start__gte=datetime.now() - timedelta(hours=today.hour, minutes=today.minute))
+        time_start__gte=datetime.now(tz=timezone.utc) - timedelta(hours=today.hour, minutes=today.minute))
 
     day_count = day_filtered.count()
     day_duration = day_filtered.aggregate(Sum('duration')).get('duration__sum')
@@ -65,7 +65,8 @@ def default_view(request, *args, **kargs):
     day_distance_score = score_of(day_distance_walk, day_distance_run, day_distance_bike, day_distance_ebike)
 
     # MONTH ##################################
-    month_filtered = Run.objects.filter(time_start__gte=datetime(year=today.year, month=today.month, day=1))
+    month_filtered = Run.objects.filter(
+        time_start__gte=datetime(year=today.year, month=today.month, day=1).replace(tzinfo=timezone.utc))
 
     month_count = month_filtered.count()
     month_duration = month_filtered.aggregate(Sum('duration')).get('duration__sum')
@@ -95,7 +96,7 @@ def default_view(request, *args, **kargs):
     # Strava Data ####################################################################
 
     strava_day_filtered = StravaRun.objects.filter(
-        time_start__gte=datetime.now() - timedelta(hours=today.hour, minutes=today.minute))
+        time_start__gte=datetime.now(tz=timezone.utc) - timedelta(hours=today.hour, minutes=today.minute))
 
     strava_day_count = strava_day_filtered.count()
     strava_day_duration = strava_day_filtered.aggregate(Sum('duration')).get('duration__sum')
@@ -129,7 +130,7 @@ def default_view(request, *args, **kargs):
     #########################################
 
     strava_month_filtered = StravaRun.objects.filter(
-        time_start__gte=datetime(year=today.year, month=today.month, day=1))
+        time_start__gte=datetime(year=today.year, month=today.month, day=1).replace(tzinfo=timezone.utc))
 
     strava_month_count = strava_month_filtered.count()
     strava_month_duration = strava_month_filtered.aggregate(Sum('duration')).get('duration__sum')
@@ -195,7 +196,7 @@ def default_view(request, *args, **kargs):
 
         # DAY ##################################
         day_filtered = Run.objects.filter(creator=request.user.profile) \
-            .filter(time_start__gte=datetime.now() - timedelta(hours=today.hour, minutes=today.minute))
+            .filter(time_start__gte=datetime.now(tz=timezone.utc) - timedelta(hours=today.hour, minutes=today.minute))
 
         day_count = day_filtered.count()
         day_duration = day_filtered.aggregate(Sum('duration')).get('duration__sum')
@@ -223,7 +224,7 @@ def default_view(request, *args, **kargs):
 
         # MONTH ##################################
         month_filtered = Run.objects.filter(creator=request.user.profile) \
-            .filter(time_start__gte=datetime(year=today.year, month=today.month, day=1))
+            .filter(time_start__gte=datetime(year=today.year, month=today.month, day=1).replace(tzinfo=timezone.utc))
 
         month_count = month_filtered.count()
         month_duration = month_filtered.aggregate(Sum('duration')).get('duration__sum')
@@ -274,7 +275,8 @@ def default_view(request, *args, **kargs):
             ),
         })
 
-    notification_query = DashboardNotification.objects.filter(active=True, publish_by__lte=datetime.now()).order_by('pos_from_top')
+    notification_query = DashboardNotification.objects.filter(
+        active=True, publish_by__lte=datetime.now(tz=timezone.utc)).order_by('pos_from_top')
     for noti in notification_query:
         if noti.close_by is None or noti.close_by > datetime.utcnow():
             if noti.type == 0:
@@ -292,11 +294,11 @@ def default_view(request, *args, **kargs):
 
 
 def community_view(request, *args, **kargs):
-    today = datetime.today()
+    today = datetime.today().replace(tzinfo=timezone.utc)
 
     # DAY ##################################
     day_filtered = Run.objects.filter(
-        time_start__gte=datetime.now() - timedelta(hours=today.hour, minutes=today.minute))
+        time_start__gte=datetime.now(tz=timezone.utc) - timedelta(hours=today.hour, minutes=today.minute))
 
     day_count = day_filtered.count()
     day_duration = day_filtered.aggregate(Sum('duration')).get('duration__sum')
@@ -325,7 +327,8 @@ def community_view(request, *args, **kargs):
     # WEEK ##################################
     week_filtered = Run.objects \
         .filter(
-        time_start__gte=datetime.now() - timedelta(days=today.weekday(), hours=today.hour, minutes=today.minute))
+        time_start__gte=datetime.now(tz=timezone.utc)
+                        - timedelta(days=today.weekday(), hours=today.hour, minutes=today.minute))
 
     week_count = week_filtered.count()
     week_duration = week_filtered.aggregate(Sum('duration')).get('duration__sum')
@@ -352,7 +355,8 @@ def community_view(request, *args, **kargs):
     week_distance_score = score_of(week_distance_walk, week_distance_run, week_distance_bike, week_distance_ebike)
 
     # MONTH ##################################
-    month_filtered = Run.objects.filter(time_start__gte=datetime(year=today.year, month=today.month, day=1))
+    month_filtered = Run.objects.filter(
+        time_start__gte=datetime(year=today.year, month=today.month, day=1).replace(tzinfo=timezone.utc))
 
     month_count = month_filtered.count()
     month_duration = month_filtered.aggregate(Sum('duration')).get('duration__sum')
@@ -379,7 +383,8 @@ def community_view(request, *args, **kargs):
     month_distance_score = score_of(month_distance_walk, month_distance_run, month_distance_bike, month_distance_ebike)
 
     # YEAR ##################################
-    year_filtered = Run.objects.filter(time_start__gte=datetime(year=today.year, month=1, day=1))
+    year_filtered = Run.objects.filter(
+        time_start__gte=datetime(year=today.year, month=1, day=1).replace(tzinfo=timezone.utc))
 
     year_count = year_filtered.count()
     year_duration = year_filtered.aggregate(Sum('duration')).get('duration__sum')
@@ -410,7 +415,7 @@ def community_view(request, *args, **kargs):
 
     # DAY ##################################
     strava_day_filtered = StravaRun.objects.filter(
-        time_start__gte=datetime.now() - timedelta(hours=today.hour, minutes=today.minute))
+        time_start__gte=datetime.now(tz=timezone.utc) - timedelta(hours=today.hour, minutes=today.minute))
 
     strava_day_count = strava_day_filtered.count()
     strava_day_duration = strava_day_filtered.aggregate(Sum('duration')).get('duration__sum')
@@ -444,7 +449,7 @@ def community_view(request, *args, **kargs):
     # WEEK ##################################
     strava_week_filtered = StravaRun.objects \
         .filter(
-        time_start__gte=datetime.now() - timedelta(days=today.weekday(), hours=today.hour, minutes=today.minute))
+        time_start__gte=datetime.now(tz=timezone.utc) - timedelta(days=today.weekday(), hours=today.hour, minutes=today.minute))
 
     strava_week_count = strava_week_filtered.count()
     strava_week_duration = strava_week_filtered.aggregate(Sum('duration')).get('duration__sum')
@@ -477,7 +482,7 @@ def community_view(request, *args, **kargs):
 
     # MONTH ##################################
     strava_month_filtered = StravaRun.objects.filter(
-        time_start__gte=datetime(year=today.year, month=today.month, day=1))
+        time_start__gte=datetime(year=today.year, month=today.month, day=1).replace(tzinfo=timezone.utc))
 
     strava_month_count = strava_month_filtered.count()
     strava_month_duration = strava_month_filtered.aggregate(Sum('duration')).get('duration__sum')
@@ -509,7 +514,8 @@ def community_view(request, *args, **kargs):
                                            strava_month_distance_bike, strava_month_distance_ebike)
 
     # YEAR ##################################
-    strava_year_filtered = StravaRun.objects.filter(time_start__gte=datetime(year=today.year, month=1, day=1))
+    strava_year_filtered = StravaRun.objects.filter(
+        time_start__gte=datetime(year=today.year, month=1, day=1).replace(tzinfo=timezone.utc))
 
     strava_year_count = strava_year_filtered.count()
     strava_year_duration = strava_year_filtered.aggregate(Sum('duration')).get('duration__sum')
@@ -594,13 +600,11 @@ def community_view(request, *args, **kargs):
 
 @login_required
 def user_view(request, *args, **kargs):
-    today = datetime.today()
+    today = datetime.today().replace(tzinfo=timezone.utc)
 
     # DAY ##################################
     day_filtered = Run.objects.filter(creator=request.user.profile) \
-        .filter(time_start__gte=datetime.now() - timedelta(hours=today.hour, minutes=today.minute))
-
-    print("day_start: ", datetime.now() - timedelta(hours=today.hour, minutes=today.minute))
+        .filter(time_start__gte=datetime.now(tz=timezone.utc) - timedelta(hours=today.hour, minutes=today.minute))
 
     day_count = day_filtered.count()
     day_duration = day_filtered.aggregate(Sum('duration')).get('duration__sum')
@@ -629,9 +633,8 @@ def user_view(request, *args, **kargs):
     # WEEK ##################################
     week_filtered = Run.objects.filter(creator=request.user.profile) \
         .filter(
-        time_start__gte=datetime.now() - timedelta(days=today.weekday(), hours=today.hour, minutes=today.minute))
-
-    print("week_start: ", datetime.now() - timedelta(days=today.weekday(), hours=today.hour, minutes=today.minute))
+        time_start__gte=datetime.now(tz=timezone.utc)
+                        - timedelta(days=today.weekday(), hours=today.hour, minutes=today.minute))
 
     week_count = week_filtered.count()
     week_duration = week_filtered.aggregate(Sum('duration')).get('duration__sum')
@@ -659,7 +662,7 @@ def user_view(request, *args, **kargs):
 
     # MONTH ##################################
     month_filtered = Run.objects.filter(creator=request.user.profile) \
-        .filter(time_start__gte=datetime(year=today.year, month=today.month, day=1))
+        .filter(time_start__gte=datetime(year=today.year, month=today.month, day=1).replace(tzinfo=timezone.utc))
 
     month_count = month_filtered.count()
     month_duration = month_filtered.aggregate(Sum('duration')).get('duration__sum')
@@ -687,7 +690,7 @@ def user_view(request, *args, **kargs):
 
     # YEAR ##################################
     year_filtered = Run.objects.filter(creator=request.user.profile) \
-        .filter(time_start__gte=datetime(year=today.year, month=1, day=1))
+        .filter(time_start__gte=datetime(year=today.year, month=1, day=1).replace(tzinfo=timezone.utc))
 
     year_count = year_filtered.count()
     year_duration = year_filtered.aggregate(Sum('duration')).get('duration__sum')

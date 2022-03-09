@@ -225,7 +225,7 @@ class RunListUserView(View):
     template_name = 'run/run_list_user.html'
 
     def get(self, request, *args, **kwargs):
-        queryset = Run.objects.filter(creator=request.user.profile.id)
+        queryset = Run.objects.filter(creator=request.user.profile.id).order_by("-time_start")
         paginator = Paginator(queryset, 10)
         page = request.GET.get('page')
 

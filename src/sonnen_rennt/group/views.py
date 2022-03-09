@@ -327,8 +327,7 @@ class GroupListView(View):
         num = _user_get_num_groups(request.user)
         max_num = _user_get_max_groups(request.user)
         can_create = _user_can_create_group(num, max_num)
-        groups = Group.objects.all()
-        groups.order_by('score')
+        groups = Group.objects.all().order_by('score')
 
         paginator = Paginator(groups, 10)
         page = request.GET.get('page')
@@ -356,8 +355,7 @@ class GroupListUserView(View):
         num = _user_get_num_groups(request.user)
         max_num = _user_get_max_groups(request.user)
         can_create = _user_can_create_group(num, max_num)
-        queryset = _user_get_filtered_groups(request.user)
-        queryset.order_by('score')
+        queryset = _user_get_filtered_groups(request.user).order_by('score')
 
         paginator = Paginator(queryset, 10)
         page = request.GET.get('page')
