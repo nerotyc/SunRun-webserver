@@ -48,33 +48,35 @@ def read_strava_data():
     else:
         file_path = 'group/.strava_group_data.yml'
 
-    with open(file_path) as f:
-        data = yaml.load(f, Loader=yaml.FullLoader)
-        if data:
-            score = data['score']
-            run_count = data['run_count']
-            num_participants = data['num_participants']
-            sum_duration = data['sum_duration']
-            sum_distance_walk = data['sum_distance_walk']
-            sum_distance_run = data['sum_distance_run']
-            sum_distance_bike = data['sum_distance_bike']
-            sum_distance_ebike = data['sum_distance_ebike']
+    try:
+        with open(file_path) as f:
+            data = yaml.load(f, Loader=yaml.FullLoader)
+            if data:
+                score = data['score']
+                run_count = data['run_count']
+                num_participants = data['num_participants']
+                sum_duration = data['sum_duration']
+                sum_distance_walk = data['sum_distance_walk']
+                sum_distance_run = data['sum_distance_run']
+                sum_distance_bike = data['sum_distance_bike']
+                sum_distance_ebike = data['sum_distance_ebike']
 
-            return GroupScore(
-                run_count,
-                num_participants,
-                sum_distance_walk,
-                sum_distance_run,
-                sum_distance_bike,
-                sum_distance_ebike,
-                sum_duration,
-                score
-            )
-        else:
-            print('reading strava data failed!')
-        return GroupScore(0, 0, 0, 0,
-                          0, 0, 0, 0)
-
+                return GroupScore(
+                    run_count,
+                    num_participants,
+                    sum_distance_walk,
+                    sum_distance_run,
+                    sum_distance_bike,
+                    sum_distance_ebike,
+                    sum_duration,
+                    score
+                )
+            else:
+                print('reading strava data failed!')
+            return GroupScore(0, 0, 0, 0, 0, 0, 0, 0)
+    except:
+        score_update_strava()
+        return GroupScore(0, 0, 0, 0, 0, 0, 0, 0)
 
 def _write_strava_data(group_score: GroupScore):
     global strava_score
