@@ -41,6 +41,7 @@ strava_score = GroupScore(0, 0, 0, 0, 0, 0, 0, 0)
 sep = os.path.sep
 
 def read_strava_data():
+    print("read_strava_data!")
     global strava_score
 
     if str(os.getcwd()).split(sep)[-1] == 'crawl':
@@ -79,6 +80,7 @@ def read_strava_data():
         return GroupScore(0, 0, 0, 0, 0, 0, 0, 0)
 
 def _write_strava_data(group_score: GroupScore):
+    print("_write_strava_data!")
     global strava_score
 
     if str(os.getcwd()).split(sep)[-1] == 'crawl':
@@ -101,6 +103,7 @@ def _write_strava_data(group_score: GroupScore):
 
 
 def _calculate_strava_score():
+    print("_calculate_strava_score!")
     group_runs = StravaRun.objects.all()
     run_count = group_runs.count()
     num_participants = group_runs.values('creator').distinct().count()
