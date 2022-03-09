@@ -41,7 +41,6 @@ strava_score = GroupScore(0, 0, 0, 0, 0, 0, 0, 0)
 sep = os.path.sep
 
 def read_strava_data():
-    print("read_strava_data!")
     global strava_score
 
     if str(os.getcwd()).split(sep)[-1] == 'crawl':
@@ -80,7 +79,6 @@ def read_strava_data():
         return GroupScore(0, 0, 0, 0, 0, 0, 0, 0)
 
 def _write_strava_data(group_score: GroupScore):
-    print("_write_strava_data!")
     global strava_score
 
     if str(os.getcwd()).split(sep)[-1] == 'crawl':
@@ -88,22 +86,25 @@ def _write_strava_data(group_score: GroupScore):
     else:
         file_path = 'group/.strava_group_data.yml'
 
-    with open(file_path, 'w+') as f:
-        data = {
-            'score': group_score.score_value,
-            'run_count': group_score.run_count,
-            'num_participants': group_score.num_participants,
-            'sum_duration': group_score.sum_duration,
-            'sum_distance_walk': group_score.sum_distance_walk,
-            'sum_distance_run': group_score.sum_distance_run,
-            'sum_distance_bike': group_score.sum_distance_bike,
-            'sum_distance_ebike': group_score.sum_distance_ebike,
-        }
-        yaml.dump(data, f)
+    try:
+        with open(file_path, 'w+') as f:
+            data = {
+                'score': group_score.score_value,
+                'run_count': group_score.run_count,
+                'num_participants': group_score.num_participants,
+                'sum_duration': group_score.sum_duration,
+                'sum_distance_walk': group_score.sum_distance_walk,
+                'sum_distance_run': group_score.sum_distance_run,
+                'sum_distance_bike': group_score.sum_distance_bike,
+                'sum_distance_ebike': group_score.sum_distance_ebike,
+            }
+            yaml.dump(data, f)
+    except:
+        score_update_strava()
+        return GroupScore(0, 0, 0, 0, 0, 0, 0, 0)
 
 
 def _calculate_strava_score():
-    print("_calculate_strava_score!")
     group_runs = StravaRun.objects.all()
     run_count = group_runs.count()
     num_participants = group_runs.values('creator').distinct().count()
