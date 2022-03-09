@@ -6,7 +6,7 @@
 At [run.djk-sonnen.de](https://run.djk-sonnen.de/) you can see the system in production.
 You can 
 
-------------------
+
 
 ## Related Projects
 ### Flutter mobile app
@@ -17,7 +17,7 @@ You can
 #### [API Docs](http://api-docs.run.djk-sonnen.de/api/v1/ui/): swagger documentation of the api's endpoints.
 #### [GitHub API Project](https://github.com/Nerotyc/SunRun-api)
 
-------------------
+
 
 ## Screenshots
 
