@@ -9,22 +9,14 @@ You can
 ------------------
 
 ## Related Projects
-
 ### Flutter mobile app
-
-#### Playstore entry
-No Playstore entry yet
-
-#### GitHub Project
-Click [here](https://github.com/nerotyc/SunRun-app) to see the source code of SunRun's mobile flutter app.
+#### Playstore entry: No Playstore entry yet
+#### [GitHub Project](https://github.com/nerotyc/SunRun-app)
 
 ### SunRun API
+#### [API Docs](http://api-docs.run.djk-sonnen.de/api/v1/ui/): swagger documentation of the api's endpoints.
 
-#### API Docs
-[Here](http://api-docs.run.djk-sonnen.de/api/v1/ui/) you can find the swagger documentation of the api's endpoints.
-
-#### GitHub API Project
-Click [here](https://github.com/Nerotyc/SunRun-api) to see the api documentation implementation on GitHub.
+#### [GitHub API Project](https://github.com/Nerotyc/SunRun-api)
 
 ------------------
 
