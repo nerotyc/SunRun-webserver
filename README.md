@@ -8,11 +8,26 @@ You can
 
 ## Screenshots
 
-![dashboard screenshot](/_media/screenshots/dashboard.jpg?raw=true "dashboard")
+|  Unauthenticated Dashboard  |  Authenticated Dashboard  |
+| :---------------------------------------------------------------: | :------------------------------------------------------: |
+| ![Topic listing](.github/screenshots/dashboard_unauth.jpg) | ![Topic](.github/screenshots/dashboard_auth.jpg)
 
-![group statistics screenshot](/_media/screenshots/screen_group_stats.jpg?raw=true "group statistics")
 
-![user profile screenshot](/_media/screenshots/screen_user_profile.jpg?raw=true "user profile")
+|  Log In  |  Sign Up  |  Profile  |
+| :-------------------------: | :-------------------------: | :-------------------------: |
+| ![Topic listing](.github/screenshots/login.jpg) | ![Topic](.github/screenshots/registration.jpg) | ![Topic](.github/screenshots/profile.jpg)
+
+|  Route List  | Route Create  |
+| :----------------------: | :-----------------------: |
+| ![Topic listing](.github/screenshots/routes.jpg) | ![Topic listing](.github/screenshots/route_create.jpg)
+
+|  Activity List | Activity Create | Activity Detail  |
+| :--------------------: | :--------------------: | :--------------------: |
+ | ![Topic](.github/screenshots/activity_list.jpg) | ![Topic](.github/screenshots/activity_create.jpg) | ![Topic](.github/screenshots/activity_detail.jpg)
+
+|  Group List  | Group Stats  |
+| :----------------------: | :-----------------------: |
+| ![Topic listing](.github/screenshots/groups.jpg) | ![Topic listing](.github/screenshots/group_stats.jpg)
 
 ## Disclaimer
 Note that this software is in an early stage of development and therefore is likely to have bugs.

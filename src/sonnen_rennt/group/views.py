@@ -75,14 +75,21 @@ def _get_strava_group_user_stats_list():
         if group_duration is None:
             group_duration = timedelta(seconds=0)
 
-        group_distance_walk = 0
+        group_distance_walk = group_user_runs.filter(type=Run.TYPE_WALK).aggregate(Sum('distance')).get('distance__sum')
+        if group_distance_walk is None:
+            group_distance_walk = 0
 
         group_distance_run = group_user_runs.filter(type=Run.TYPE_RUN).aggregate(Sum('distance')).get('distance__sum')
         if group_distance_run is None:
             group_distance_run = 0
 
-        group_distance_bike = 0
-        group_distance_ebike = 0
+        group_distance_bike = group_user_runs.filter(type=Run.TYPE_BIKE).aggregate(Sum('distance')).get('distance__sum')
+        if group_distance_bike is None:
+            group_distance_bike = 0
+
+        group_distance_ebike = group_user_runs.filter(type=Run.TYPE_EBIKE).aggregate(Sum('distance')).get('distance__sum')
+        if group_distance_ebike is None:
+            group_distance_ebike = 0
 
         runners.append(_get_strava_group_user_stats_item(
             obj.creator,
@@ -468,8 +475,6 @@ class StravaGroupStatsView(View):
     template_name = 'group/strava_group_stats.html'
 
     def get(self, request, *args, **kwargs):
-        group_id = self.kwargs.get('group_id')
-
         num = _user_get_num_groups(request.user)
         max_num = _user_get_max_groups(request.user)
         can_create = _user_can_create_group(num, max_num)
