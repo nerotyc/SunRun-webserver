@@ -278,11 +278,14 @@ def run_create(request, *args, **kwargs):
     # ================================================
     # clean_time_start ===============================
 
-    if read_time_start is None:
-        time_start = datetime.now(tz=pytz.timezone("Europe/Berlin"))  # berlin tz
+    if read_time_start is None or len(str(read_time_start)) < 1:
+        time_start = pytz.timezone("Europe/Berlin").localize(datetime.utcnow())  # berlin tz
     else:
-        read_time_start = datetime.fromisoformat(read_time_start)
-        read_time = pytz.timezone("Europe/Berlin").localize(read_time_start.replace(tzinfo=None))  # berlin tz
+        read_time_start = datetime.fromisoformat(str(read_time_start).replace("T", " ").replace("Z", "+00:00"))
+        if read_time_start.tzinfo is None:
+            read_time = pytz.utc.localize(read_time_start)
+        else:
+            read_time = read_time_start
 
         today = datetime.now(tz=timezone.utc)
         one_week = timedelta(weeks=1)
@@ -535,16 +538,19 @@ def run_edit(request, run_id, *args, **kwargs):
     # ================================================
     # clean_time_start ===============================
 
-    if read_time_start is None:
-        time_start = datetime.now().strftime("%Y-%m-%d %H:%M")
+    if read_time_start is None or len(str(read_time_start)) < 1:
+        time_start = pytz.timezone("Europe/Berlin").localize(datetime.utcnow())
 
     else:
-        read_time_start = datetime.fromisoformat(read_time_start)
-        today = pytz.utc.localize(datetime.now().replace(tzinfo=None))
+        read_time_start = datetime.fromisoformat(str(read_time_start).replace("T", " ").replace("Z", "+00:00"))
+        today = pytz.utc.localize(datetime.utcnow())
         one_week = timedelta(weeks=1)
-        time_start = pytz.utc.localize(read_time_start.replace(tzinfo=None))
+        if read_time_start.tzinfo is None:
+            time_start = pytz.utc.localize(read_time_start)
+        else:
+            time_start = read_time_start
 
-        delta = today - read_time_start
+        delta = today - time_start
 
         if delta > one_week:
             response_object.update({
@@ -563,7 +569,7 @@ def run_edit(request, run_id, *args, **kwargs):
     # ================================================
     # clean_duration ===============================
 
-    if read_duration is None:
+    if read_duration is None or len(str(read_duration)) < 1:
         response_object.update({
             'code': '400-11',
             'detail': 'Duration must not be empty!'

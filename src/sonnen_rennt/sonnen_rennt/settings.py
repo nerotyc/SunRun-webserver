@@ -36,6 +36,7 @@ ALLOWED_HOSTS = [
     "localhost",
     "192.168.178.70",
     "192.168.178.31",
+    "192.168.178.20",
     "djk-sonnen.de"
 ]
 
@@ -53,6 +54,7 @@ CSRF_TRUSTED_ORIGINS = [
    "http://127.0.0.1",
    "http://192.168.178.70",
    "http://192.168.178.31",
+   "http://192.168.178.20",
    "http://djk-sonnen.de"
 ]
 
@@ -64,7 +66,8 @@ CORS_ORIGIN_WHITELIST = [
     "localhost",
     "192.168.178.70",
     "192.168.178.31",
-    "djk-sonnen.de"
+    "djk-sonnen.de",
+    "192.168.178.20"
 ]
 
 # Application definition
