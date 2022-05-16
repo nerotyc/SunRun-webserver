@@ -6,7 +6,8 @@
 At [run.djk-sonnen.de](https://run.djk-sonnen.de/) you can see the system in production.
 You can 
 
-
+***STRAVA AUTOMATED CRAWLER FOR DATA IMPORT DEPRECATE***
+cannot keep up with the regular UI/HTML structure updates...
 
 ## Related Projects
 ### Flutter mobile app
